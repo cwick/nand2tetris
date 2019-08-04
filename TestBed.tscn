@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://TestBed.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
 [ext_resource path="res://chips/not/NOT.tscn" type="PackedScene" id=3]
 [ext_resource path="res://chips/and/AND.tscn" type="PackedScene" id=4]
+[ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=5]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -26,6 +27,19 @@ func _ready():
 	
 func run():
 	$Output.text = String($AND.apply($InputA.pressed, $InputB.pressed))
+	
+func _on_input_pressed():
+	run()
+"
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Node2D
+
+func _ready():
+	run()
+	
+func run():
+	$Output.text = String($OR.apply($InputA.pressed, $InputB.pressed))
 	
 func _on_input_pressed():
 	run()
@@ -110,8 +124,38 @@ margin_left = 70.0
 margin_top = 10.0
 margin_right = 120.0
 margin_bottom = 60.0
+
+[node name="OR" type="Node2D" parent="."]
+position = Vector2( 20, 360 )
+script = SubResource( 3 )
+
+[node name="InputA" type="CheckBox" parent="OR"]
+margin_right = 37.0
+margin_bottom = 24.0
+text = "A"
+
+[node name="InputB" type="CheckBox" parent="OR"]
+margin_top = 60.0
+margin_right = 37.0
+margin_bottom = 84.0
+text = "B"
+
+[node name="Output" type="Label" parent="OR"]
+margin_left = 170.0
+margin_top = 24.0
+margin_right = 215.0
+margin_bottom = 38.0
+text = "Output"
+
+[node name="OR" parent="OR" instance=ExtResource( 5 )]
+margin_left = 70.0
+margin_top = 10.0
+margin_right = 120.0
+margin_bottom = 60.0
 [connection signal="pressed" from="InputA" to="." method="_on_input_pressed"]
 [connection signal="pressed" from="InputB" to="." method="_on_input_pressed"]
 [connection signal="pressed" from="NOT/Input" to="NOT" method="_on_input_pressed"]
 [connection signal="pressed" from="AND/InputA" to="AND" method="_on_input_pressed"]
 [connection signal="pressed" from="AND/InputB" to="AND" method="_on_input_pressed"]
+[connection signal="pressed" from="OR/InputA" to="OR" method="_on_input_pressed"]
+[connection signal="pressed" from="OR/InputB" to="OR" method="_on_input_pressed"]
