@@ -4,7 +4,7 @@ extends Node
 export(NodePath) var chip = null
 
 func _get_configuration_warning():
-	if chip.is_empty():
+	if chip == null or chip.is_empty():
 		return "chip is required"
 	elif $Input0 == null:
 		return "missing inputs"
@@ -12,6 +12,9 @@ func _get_configuration_warning():
 		return ""
 	
 func _ready():
+	if Engine.is_editor_hint():
+		return
+	
 	var input = $Input0
 	var i = 0
 	while input != null:

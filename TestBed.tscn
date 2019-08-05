@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://TestRunner.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
 [ext_resource path="res://chips/not/NOT.tscn" type="PackedScene" id=3]
 [ext_resource path="res://chips/and/AND.tscn" type="PackedScene" id=4]
 [ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=5]
+[ext_resource path="res://chips/xor/XOR.tscn" type="PackedScene" id=6]
 
 [node name="Root" type="Node2D"]
 
@@ -52,8 +53,8 @@ text = "A"
 [node name="NOT" parent="NOT" instance=ExtResource( 3 )]
 margin_left = 70.0
 margin_top = -10.0
-margin_right = 110.0
-margin_bottom = 30.0
+margin_right = 120.0
+margin_bottom = 40.0
 
 [node name="Output" type="Label" parent="NOT"]
 margin_left = 170.0
@@ -119,3 +120,32 @@ margin_left = 70.0
 margin_top = 10.0
 margin_right = 120.0
 margin_bottom = 60.0
+
+[node name="XOR" type="Node2D" parent="."]
+position = Vector2( 20, 460 )
+script = ExtResource( 1 )
+chip = NodePath("XOR")
+
+[node name="Input0" type="CheckBox" parent="XOR"]
+margin_right = 37.0
+margin_bottom = 24.0
+text = "A"
+
+[node name="Input1" type="CheckBox" parent="XOR"]
+margin_top = 60.0
+margin_right = 37.0
+margin_bottom = 84.0
+text = "B"
+
+[node name="Output" type="Label" parent="XOR"]
+margin_left = 170.0
+margin_top = 28.0
+margin_right = 215.0
+margin_bottom = 42.0
+text = "Output"
+
+[node name="XOR" parent="XOR" instance=ExtResource( 6 )]
+margin_left = 70.0
+margin_top = 18.0
+margin_right = 120.0
+margin_bottom = 68.0
