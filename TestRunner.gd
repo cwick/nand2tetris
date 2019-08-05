@@ -16,10 +16,7 @@ func _ready():
 		return
 	
 	for input in get_inputs():
-		if input is LineEdit:
-			input.connect("text_changed", self, "_on_text_input")
-		else:
-			input.connect("pressed", self, "_on_input")
+		input.connect("input_changed", self, "_on_input")
 	
 	run()
 	
@@ -42,7 +39,7 @@ func run():
 		for i in range(result.size()):
 			get_node("Output" + String(i)).text = String(result[i])
 	else:
-		$Output.text = String(result)
+		$Output.set_text(String(result))
 			
 	
 func get_inputs():
@@ -56,6 +53,7 @@ func get_inputs():
 	
 	return input_list
 	
+#warning-ignore:unused_argument
 func _on_text_input(new_text):
 	run()
 		

@@ -19,6 +19,10 @@ config/name="Nand2Tetris"
 run/main_scene="res://TestBed.tscn"
 config/icon="res://icon.png"
 
+[debug]
+
+gdscript/warnings/return_value_discarded=false
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

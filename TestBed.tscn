@@ -1,14 +1,17 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://TestRunner.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
-[ext_resource path="res://chips/not/NOT.tscn" type="PackedScene" id=3]
-[ext_resource path="res://chips/and/AND.tscn" type="PackedScene" id=4]
-[ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=5]
-[ext_resource path="res://chips/xor/XOR.tscn" type="PackedScene" id=6]
-[ext_resource path="res://chips/mux/MUX.tscn" type="PackedScene" id=7]
-[ext_resource path="res://chips/dmux/DMUX.tscn" type="PackedScene" id=8]
-[ext_resource path="res://chips/not16/NOT16.tscn" type="PackedScene" id=9]
+[ext_resource path="res://BinaryInput.gd" type="Script" id=3]
+[ext_resource path="res://chips/not/NOT.tscn" type="PackedScene" id=4]
+[ext_resource path="res://chips/and/AND.tscn" type="PackedScene" id=5]
+[ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=6]
+[ext_resource path="res://chips/xor/XOR.tscn" type="PackedScene" id=7]
+[ext_resource path="res://chips/mux/MUX.tscn" type="PackedScene" id=8]
+[ext_resource path="res://chips/dmux/DMUX.tscn" type="PackedScene" id=9]
+[ext_resource path="res://MultiBitOutput.gd" type="Script" id=10]
+[ext_resource path="res://MultiBitInput.gd" type="Script" id=11]
+[ext_resource path="res://chips/not16/NOT16.tscn" type="PackedScene" id=12]
 
 [node name="Root" type="Control"]
 anchor_right = 1.0
@@ -44,6 +47,7 @@ margin_top = 30.0
 margin_right = 57.0
 margin_bottom = 54.0
 text = "A"
+script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="NAND"]
 margin_left = 20.0
@@ -51,6 +55,7 @@ margin_top = 60.0
 margin_right = 57.0
 margin_bottom = 84.0002
 text = "B"
+script = ExtResource( 3 )
 
 [node name="Output" type="Label" parent="NAND"]
 margin_left = 170.0
@@ -68,8 +73,9 @@ chip = NodePath("NOT")
 margin_right = 37.0
 margin_bottom = 24.0
 text = "A"
+script = ExtResource( 3 )
 
-[node name="NOT" parent="NOT" instance=ExtResource( 3 )]
+[node name="NOT" parent="NOT" instance=ExtResource( 4 )]
 margin_left = 70.0
 margin_top = -10.0
 margin_right = 120.0
@@ -92,12 +98,14 @@ margin_top = 10.0
 margin_right = 37.0
 margin_bottom = 34.0
 text = "A"
+script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="AND"]
 margin_top = 42.0
 margin_right = 37.0
 margin_bottom = 66.0
 text = "B"
+script = ExtResource( 3 )
 
 [node name="Output" type="Label" parent="AND"]
 margin_left = 150.0
@@ -106,7 +114,7 @@ margin_right = 195.0
 margin_bottom = 44.0
 text = "Output"
 
-[node name="AND" parent="AND" instance=ExtResource( 4 )]
+[node name="AND" parent="AND" instance=ExtResource( 5 )]
 margin_left = 70.0
 margin_top = 10.0
 margin_right = 120.0
@@ -122,12 +130,14 @@ margin_top = 10.0
 margin_right = 37.0
 margin_bottom = 34.0
 text = "A"
+script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="OR"]
 margin_top = 42.0
 margin_right = 37.0
 margin_bottom = 66.0
 text = "B"
+script = ExtResource( 3 )
 
 [node name="Output" type="Label" parent="OR"]
 margin_left = 150.0
@@ -136,7 +146,7 @@ margin_right = 195.0
 margin_bottom = 42.0
 text = "Output"
 
-[node name="OR" parent="OR" instance=ExtResource( 5 )]
+[node name="OR" parent="OR" instance=ExtResource( 6 )]
 margin_left = 70.0
 margin_top = 10.0
 margin_right = 120.0
@@ -152,12 +162,14 @@ margin_top = 14.0
 margin_right = 37.0
 margin_bottom = 38.0
 text = "A"
+script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="XOR"]
 margin_top = 44.0
 margin_right = 37.0
 margin_bottom = 68.0
 text = "B"
+script = ExtResource( 3 )
 
 [node name="Output" type="Label" parent="XOR"]
 margin_left = 150.0
@@ -166,7 +178,7 @@ margin_right = 195.0
 margin_bottom = 50.0
 text = "Output"
 
-[node name="XOR" parent="XOR" instance=ExtResource( 6 )]
+[node name="XOR" parent="XOR" instance=ExtResource( 7 )]
 margin_left = 70.0
 margin_top = 18.0
 margin_right = 120.0
@@ -182,12 +194,14 @@ margin_top = 14.0
 margin_right = 37.0
 margin_bottom = 38.0
 text = "A"
+script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="MUX"]
 margin_top = 44.0
 margin_right = 37.0
 margin_bottom = 68.0
 text = "B"
+script = ExtResource( 3 )
 
 [node name="Input2" type="CheckBox" parent="MUX"]
 margin_left = 60.0
@@ -195,6 +209,7 @@ margin_top = 76.0
 margin_right = 140.0
 margin_bottom = 100.0
 text = "selector"
+script = ExtResource( 3 )
 
 [node name="Output" type="Label" parent="MUX"]
 margin_left = 150.0
@@ -203,7 +218,7 @@ margin_right = 195.0
 margin_bottom = 50.0
 text = "Output"
 
-[node name="MUX" parent="MUX" instance=ExtResource( 7 )]
+[node name="MUX" parent="MUX" instance=ExtResource( 8 )]
 margin_left = 70.0
 margin_top = 16.0
 margin_right = 120.0
@@ -219,6 +234,7 @@ margin_top = 30.0
 margin_right = 37.0
 margin_bottom = 54.0
 text = "A"
+script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="DMUX"]
 margin_left = 60.0
@@ -226,6 +242,7 @@ margin_top = 76.0
 margin_right = 140.0
 margin_bottom = 100.0
 text = "selector"
+script = ExtResource( 3 )
 
 [node name="Output0" type="Label" parent="DMUX"]
 margin_left = 150.0
@@ -241,7 +258,7 @@ margin_right = 203.0
 margin_bottom = 68.0
 text = "Output2"
 
-[node name="DMUX" parent="DMUX" instance=ExtResource( 8 )]
+[node name="DMUX" parent="DMUX" instance=ExtResource( 9 )]
 margin_left = 70.0
 margin_top = 20.0
 margin_right = 120.0
@@ -258,6 +275,7 @@ margin_top = 30.0
 margin_right = 253.0
 margin_bottom = 44.0
 text = "Output"
+script = ExtResource( 10 )
 
 [node name="Input0" type="LineEdit" parent="Not16"]
 margin_left = -20.0
@@ -268,8 +286,9 @@ text = "0000000000000000"
 align = 2
 max_length = 16
 expand_to_text_length = true
+script = ExtResource( 11 )
 
-[node name="Not16" parent="Not16" instance=ExtResource( 9 )]
+[node name="Not16" parent="Not16" instance=ExtResource( 12 )]
 margin_left = 130.0
 margin_top = 10.0
 margin_right = 180.0
