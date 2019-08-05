@@ -1,4 +1,4 @@
 extends Object
 
-func apply(a, b) -> bool:
+func apply(a: bool, b: bool) -> bool:
 	return !(a && b)

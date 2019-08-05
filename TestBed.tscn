@@ -15,33 +15,33 @@ chip = NodePath("NAND")
 
 [node name="NAND" parent="NAND" instance=ExtResource( 2 )]
 margin_left = 90.0
-margin_top = 40.0
-margin_right = 150.0
-margin_bottom = 90.0
+margin_top = 30.0
+margin_right = 140.0
+margin_bottom = 80.0
 
 [node name="Input0" type="CheckBox" parent="NAND"]
 margin_left = 20.0
-margin_top = 20.0
+margin_top = 30.0
 margin_right = 57.0
-margin_bottom = 44.0
+margin_bottom = 54.0
 text = "A"
 
 [node name="Input1" type="CheckBox" parent="NAND"]
 margin_left = 20.0
-margin_top = 83.5628
+margin_top = 60.0
 margin_right = 57.0
-margin_bottom = 107.563
+margin_bottom = 84.0002
 text = "B"
 
 [node name="Output" type="Label" parent="NAND"]
-margin_left = 190.0
-margin_top = 60.0
-margin_right = 235.0
-margin_bottom = 74.0
+margin_left = 170.0
+margin_top = 50.0
+margin_right = 215.0
+margin_bottom = 64.0
 text = "Output"
 
 [node name="NOT" type="Node2D" parent="."]
-position = Vector2( 20, 160 )
+position = Vector2( 20, 110 )
 script = ExtResource( 1 )
 chip = NodePath("NOT")
 
@@ -57,33 +57,34 @@ margin_right = 120.0
 margin_bottom = 40.0
 
 [node name="Output" type="Label" parent="NOT"]
-margin_left = 170.0
-margin_top = 3.0
-margin_right = 215.0
-margin_bottom = 17.0
+margin_left = 150.0
+margin_top = 10.0
+margin_right = 195.0
+margin_bottom = 24.0
 text = "Output"
 
 [node name="AND" type="Node2D" parent="."]
-position = Vector2( 20, 260 )
+position = Vector2( 20, 160 )
 script = ExtResource( 1 )
 chip = NodePath("AND")
 
 [node name="Input0" type="CheckBox" parent="AND"]
+margin_top = 10.0
 margin_right = 37.0
-margin_bottom = 24.0
+margin_bottom = 34.0
 text = "A"
 
 [node name="Input1" type="CheckBox" parent="AND"]
-margin_top = 60.0
+margin_top = 42.0
 margin_right = 37.0
-margin_bottom = 84.0
+margin_bottom = 66.0
 text = "B"
 
 [node name="Output" type="Label" parent="AND"]
-margin_left = 170.0
-margin_top = 24.0
-margin_right = 215.0
-margin_bottom = 38.0
+margin_left = 150.0
+margin_top = 30.0
+margin_right = 195.0
+margin_bottom = 44.0
 text = "Output"
 
 [node name="AND" parent="AND" instance=ExtResource( 4 )]
@@ -93,25 +94,26 @@ margin_right = 120.0
 margin_bottom = 60.0
 
 [node name="OR" type="Node2D" parent="."]
-position = Vector2( 20, 360 )
+position = Vector2( 20, 226 )
 script = ExtResource( 1 )
 chip = NodePath("OR")
 
 [node name="Input0" type="CheckBox" parent="OR"]
+margin_top = 10.0
 margin_right = 37.0
-margin_bottom = 24.0
+margin_bottom = 34.0
 text = "A"
 
 [node name="Input1" type="CheckBox" parent="OR"]
-margin_top = 60.0
+margin_top = 42.0
 margin_right = 37.0
-margin_bottom = 84.0
+margin_bottom = 66.0
 text = "B"
 
 [node name="Output" type="Label" parent="OR"]
-margin_left = 170.0
+margin_left = 150.0
 margin_top = 28.0
-margin_right = 215.0
+margin_right = 195.0
 margin_bottom = 42.0
 text = "Output"
 
@@ -122,26 +124,27 @@ margin_right = 120.0
 margin_bottom = 60.0
 
 [node name="XOR" type="Node2D" parent="."]
-position = Vector2( 20, 460 )
+position = Vector2( 20, 286 )
 script = ExtResource( 1 )
 chip = NodePath("XOR")
 
 [node name="Input0" type="CheckBox" parent="XOR"]
+margin_top = 14.0
 margin_right = 37.0
-margin_bottom = 24.0
+margin_bottom = 38.0
 text = "A"
 
 [node name="Input1" type="CheckBox" parent="XOR"]
-margin_top = 60.0
+margin_top = 44.0
 margin_right = 37.0
-margin_bottom = 84.0
+margin_bottom = 68.0
 text = "B"
 
 [node name="Output" type="Label" parent="XOR"]
-margin_left = 170.0
-margin_top = 28.0
-margin_right = 215.0
-margin_bottom = 42.0
+margin_left = 150.0
+margin_top = 36.0
+margin_right = 195.0
+margin_bottom = 50.0
 text = "Output"
 
 [node name="XOR" parent="XOR" instance=ExtResource( 6 )]

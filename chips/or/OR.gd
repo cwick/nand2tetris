@@ -2,8 +2,8 @@ extends Object
 
 const AND = preload("res://chips/and/AND.gd")
 const NOT = preload("res://chips/not/NOT.gd")
-var _and = AND.new()
-var _not = NOT.new()
+var _and := AND.new()
+var _not := NOT.new()
 
 func apply(a: bool, b: bool) -> bool:
 	return _not.apply(
