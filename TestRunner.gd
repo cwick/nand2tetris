@@ -15,26 +15,36 @@ func _ready():
 	if Engine.is_editor_hint():
 		return
 	
-	var input = $Input0
-	var i = 0
-	while input != null:
+	for input in get_inputs():
 		input.connect("pressed", self, "_on_input_pressed")
-		i += 1
-		input = get_node_or_null("Input" + String(i))
 	
 	run()
 	
 func run():
 	var _chip = get_node(chip)
-	var input: Button = $Input0
-	var i = 0
 	var args = []
-	while input != null:
+	for input in get_inputs():
 		args.append(input.pressed)
+			
+	var result = _chip.callv("apply", args)
+	if result is Array:
+		for i in range(result.size()):
+			get_node("Output" + String(i)).text = String(result[i])
+	else:
+		$Output.text = String(result)
+			
+	
+func get_inputs():
+	var input = $Input0
+	var i = 0
+	var input_list = []
+	while input != null:
+		input_list.append(input)
 		i += 1
 		input = get_node_or_null("Input" + String(i))
-		
-	$Output.text = String(_chip.callv("apply", args))
+	
+	return input_list
+	
 	
 func _on_input_pressed():
 	run()

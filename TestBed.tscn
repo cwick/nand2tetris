@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://TestRunner.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=5]
 [ext_resource path="res://chips/xor/XOR.tscn" type="PackedScene" id=6]
 [ext_resource path="res://chips/mux/MUX.tscn" type="PackedScene" id=7]
+[ext_resource path="res://chips/dmux/DMUX.tscn" type="PackedScene" id=8]
 
 [node name="Root" type="Node2D"]
 
@@ -190,3 +191,41 @@ margin_left = 70.0
 margin_top = 16.0
 margin_right = 120.0
 margin_bottom = 66.0
+
+[node name="DMUX" type="Node2D" parent="."]
+position = Vector2( 20, 460 )
+script = ExtResource( 1 )
+chip = NodePath("DMUX")
+
+[node name="Input0" type="CheckBox" parent="DMUX"]
+margin_top = 30.0
+margin_right = 37.0
+margin_bottom = 54.0
+text = "A"
+
+[node name="Input1" type="CheckBox" parent="DMUX"]
+margin_left = 60.0
+margin_top = 76.0
+margin_right = 140.0
+margin_bottom = 100.0
+text = "selector"
+
+[node name="Output0" type="Label" parent="DMUX"]
+margin_left = 150.0
+margin_top = 20.0
+margin_right = 195.0
+margin_bottom = 34.0
+text = "Output1"
+
+[node name="Output1" type="Label" parent="DMUX"]
+margin_left = 150.0
+margin_top = 54.0
+margin_right = 203.0
+margin_bottom = 68.0
+text = "Output2"
+
+[node name="DMUX" parent="DMUX" instance=ExtResource( 8 )]
+margin_left = 70.0
+margin_top = 20.0
+margin_right = 120.0
+margin_bottom = 70.0
