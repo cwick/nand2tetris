@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://TestRunner.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://chips/and/AND.tscn" type="PackedScene" id=4]
 [ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=5]
 [ext_resource path="res://chips/xor/XOR.tscn" type="PackedScene" id=6]
+[ext_resource path="res://chips/mux/MUX.tscn" type="PackedScene" id=7]
 
 [node name="Root" type="Node2D"]
 
@@ -152,3 +153,40 @@ margin_left = 70.0
 margin_top = 18.0
 margin_right = 120.0
 margin_bottom = 68.0
+
+[node name="MUX" type="Node2D" parent="."]
+position = Vector2( 20, 354 )
+script = ExtResource( 1 )
+chip = NodePath("MUX")
+
+[node name="Input0" type="CheckBox" parent="MUX"]
+margin_top = 14.0
+margin_right = 37.0
+margin_bottom = 38.0
+text = "A"
+
+[node name="Input1" type="CheckBox" parent="MUX"]
+margin_top = 44.0
+margin_right = 37.0
+margin_bottom = 68.0
+text = "B"
+
+[node name="Input2" type="CheckBox" parent="MUX"]
+margin_left = 60.0
+margin_top = 76.0
+margin_right = 140.0
+margin_bottom = 100.0
+text = "selector"
+
+[node name="Output" type="Label" parent="MUX"]
+margin_left = 150.0
+margin_top = 36.0
+margin_right = 195.0
+margin_bottom = 50.0
+text = "Output"
+
+[node name="MUX" parent="MUX" instance=ExtResource( 7 )]
+margin_left = 70.0
+margin_top = 16.0
+margin_right = 120.0
+margin_bottom = 66.0
