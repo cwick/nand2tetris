@@ -7,7 +7,9 @@ func _get_configuration_warning():
 	if chip == null or chip.is_empty():
 		return "chip is required"
 	elif $Input0 == null:
-		return "missing inputs"
+		return "missing input node Input0"
+	elif get_node_or_null("Output") == null && get_node_or_null("Output0") == null:
+		return "missing output node Output or Output0"
 	else:
 		return ""
 	
@@ -24,15 +26,7 @@ func run():
 	var _chip = get_node(chip)
 	var args = []
 	for input in get_inputs():
-		if input is Button:
-			args.append(input.pressed)
-		elif input is LineEdit:
-			var arg := 0
-			for c in input.text:
-				if c == "0" or c == "1":
-					arg <<= 1
-					arg |= 1 if c == "1" else 0
-			args.append(arg)
+		args.append(input.get_input())
 			
 	var result = _chip.callv("apply", args)
 	if result is Array:

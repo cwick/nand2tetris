@@ -26,8 +26,8 @@ anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -56.0
 margin_top = 10.0
-margin_right = 56.0
-margin_bottom = 14.0
+margin_right = 71.0
+margin_bottom = 24.0
 text = "Basic Logic Gates"
 uppercase = true
 
@@ -37,35 +37,35 @@ chip = NodePath("NAND")
 
 [node name="NAND" parent="NAND" instance=ExtResource( 2 )]
 margin_left = 90.0
-margin_top = 30.0
+margin_top = 44.0
 margin_right = 140.0
-margin_bottom = 80.0
+margin_bottom = 94.0
 
 [node name="Input0" type="CheckBox" parent="NAND"]
 margin_left = 20.0
-margin_top = 30.0
+margin_top = 44.0
 margin_right = 57.0
-margin_bottom = 54.0
+margin_bottom = 68.0
 text = "A"
 script = ExtResource( 3 )
 
 [node name="Input1" type="CheckBox" parent="NAND"]
 margin_left = 20.0
-margin_top = 60.0
+margin_top = 74.0
 margin_right = 57.0
-margin_bottom = 84.0002
+margin_bottom = 98.0002
 text = "B"
 script = ExtResource( 3 )
 
 [node name="Output" type="Label" parent="NAND"]
 margin_left = 170.0
-margin_top = 50.0
+margin_top = 64.0
 margin_right = 215.0
-margin_bottom = 64.0
+margin_bottom = 78.0
 text = "Output"
 
 [node name="NOT" type="Node2D" parent="."]
-position = Vector2( 20, 110 )
+position = Vector2( 20, 124 )
 script = ExtResource( 1 )
 chip = NodePath("NOT")
 
@@ -89,7 +89,7 @@ margin_bottom = 24.0
 text = "Output"
 
 [node name="AND" type="Node2D" parent="."]
-position = Vector2( 20, 160 )
+position = Vector2( 20, 174 )
 script = ExtResource( 1 )
 chip = NodePath("AND")
 
@@ -121,7 +121,7 @@ margin_right = 120.0
 margin_bottom = 60.0
 
 [node name="OR" type="Node2D" parent="."]
-position = Vector2( 20, 226 )
+position = Vector2( 20, 240 )
 script = ExtResource( 1 )
 chip = NodePath("OR")
 
@@ -153,7 +153,7 @@ margin_right = 120.0
 margin_bottom = 60.0
 
 [node name="XOR" type="Node2D" parent="."]
-position = Vector2( 20, 286 )
+position = Vector2( 20, 300 )
 script = ExtResource( 1 )
 chip = NodePath("XOR")
 
@@ -185,7 +185,7 @@ margin_right = 120.0
 margin_bottom = 68.0
 
 [node name="MUX" type="Node2D" parent="."]
-position = Vector2( 20, 354 )
+position = Vector2( 20, 368 )
 script = ExtResource( 1 )
 chip = NodePath("MUX")
 
@@ -225,7 +225,7 @@ margin_right = 120.0
 margin_bottom = 66.0
 
 [node name="DMUX" type="Node2D" parent="."]
-position = Vector2( 20, 460 )
+position = Vector2( 20, 474 )
 script = ExtResource( 1 )
 chip = NodePath("DMUX")
 
@@ -265,7 +265,7 @@ margin_right = 120.0
 margin_bottom = 70.0
 
 [node name="Not16" type="Node2D" parent="."]
-position = Vector2( 270, 10 )
+position = Vector2( 270, 24 )
 script = ExtResource( 1 )
 chip = NodePath("Not16")
 

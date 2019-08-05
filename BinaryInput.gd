@@ -9,3 +9,5 @@ func _ready():
 func _on_pressed():
 	emit_signal("input_changed")
 	
+func get_input() -> bool:
+	return pressed
