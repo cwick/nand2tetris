@@ -1,74 +1,38 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://TestBed.gd" type="Script" id=1]
+[ext_resource path="res://TestRunner.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
 [ext_resource path="res://chips/not/NOT.tscn" type="PackedScene" id=3]
 [ext_resource path="res://chips/and/AND.tscn" type="PackedScene" id=4]
 [ext_resource path="res://chips/or/OR.tscn" type="PackedScene" id=5]
 
-[sub_resource type="GDScript" id=1]
-script/source = "extends Node2D
-
-func _ready():
-	run()
-	
-func run():
-	$Output.text = String($NOT.apply($Input.pressed))
-	
-func _on_input_pressed():
-	run()
-"
-
-[sub_resource type="GDScript" id=2]
-script/source = "extends Node2D
-
-func _ready():
-	run()
-	
-func run():
-	$Output.text = String($AND.apply($InputA.pressed, $InputB.pressed))
-	
-func _on_input_pressed():
-	run()
-"
-
-[sub_resource type="GDScript" id=3]
-script/source = "extends Node2D
-
-func _ready():
-	run()
-	
-func run():
-	$Output.text = String($OR.apply($InputA.pressed, $InputB.pressed))
-	
-func _on_input_pressed():
-	run()
-"
-
 [node name="Root" type="Node2D"]
-script = ExtResource( 1 )
 
-[node name="NAND" parent="." instance=ExtResource( 2 )]
+[node name="NAND" type="Node2D" parent="."]
+script = ExtResource( 1 )
+chip = NodePath("NAND")
+
+[node name="NAND" parent="NAND" instance=ExtResource( 2 )]
 margin_left = 90.0
 margin_top = 40.0
 margin_right = 150.0
 margin_bottom = 90.0
 
-[node name="InputA" type="CheckBox" parent="."]
+[node name="Input0" type="CheckBox" parent="NAND"]
 margin_left = 20.0
 margin_top = 20.0
 margin_right = 57.0
 margin_bottom = 44.0
 text = "A"
 
-[node name="InputB" type="CheckBox" parent="."]
+[node name="Input1" type="CheckBox" parent="NAND"]
 margin_left = 20.0
 margin_top = 83.5628
 margin_right = 57.0
 margin_bottom = 107.563
 text = "B"
 
-[node name="Output" type="Label" parent="."]
+[node name="Output" type="Label" parent="NAND"]
 margin_left = 190.0
 margin_top = 60.0
 margin_right = 235.0
@@ -77,9 +41,10 @@ text = "Output"
 
 [node name="NOT" type="Node2D" parent="."]
 position = Vector2( 20, 160 )
-script = SubResource( 1 )
+script = ExtResource( 1 )
+chip = NodePath("NOT")
 
-[node name="Input" type="CheckBox" parent="NOT"]
+[node name="Input0" type="CheckBox" parent="NOT"]
 margin_right = 37.0
 margin_bottom = 24.0
 text = "A"
@@ -99,14 +64,15 @@ text = "Output"
 
 [node name="AND" type="Node2D" parent="."]
 position = Vector2( 20, 260 )
-script = SubResource( 2 )
+script = ExtResource( 1 )
+chip = NodePath("AND")
 
-[node name="InputA" type="CheckBox" parent="AND"]
+[node name="Input0" type="CheckBox" parent="AND"]
 margin_right = 37.0
 margin_bottom = 24.0
 text = "A"
 
-[node name="InputB" type="CheckBox" parent="AND"]
+[node name="Input1" type="CheckBox" parent="AND"]
 margin_top = 60.0
 margin_right = 37.0
 margin_bottom = 84.0
@@ -127,14 +93,15 @@ margin_bottom = 60.0
 
 [node name="OR" type="Node2D" parent="."]
 position = Vector2( 20, 360 )
-script = SubResource( 3 )
+script = ExtResource( 1 )
+chip = NodePath("OR")
 
-[node name="InputA" type="CheckBox" parent="OR"]
+[node name="Input0" type="CheckBox" parent="OR"]
 margin_right = 37.0
 margin_bottom = 24.0
 text = "A"
 
-[node name="InputB" type="CheckBox" parent="OR"]
+[node name="Input1" type="CheckBox" parent="OR"]
 margin_top = 60.0
 margin_right = 37.0
 margin_bottom = 84.0
@@ -142,9 +109,9 @@ text = "B"
 
 [node name="Output" type="Label" parent="OR"]
 margin_left = 170.0
-margin_top = 24.0
+margin_top = 28.0
 margin_right = 215.0
-margin_bottom = 38.0
+margin_bottom = 42.0
 text = "Output"
 
 [node name="OR" parent="OR" instance=ExtResource( 5 )]
@@ -152,10 +119,3 @@ margin_left = 70.0
 margin_top = 10.0
 margin_right = 120.0
 margin_bottom = 60.0
-[connection signal="pressed" from="InputA" to="." method="_on_input_pressed"]
-[connection signal="pressed" from="InputB" to="." method="_on_input_pressed"]
-[connection signal="pressed" from="NOT/Input" to="NOT" method="_on_input_pressed"]
-[connection signal="pressed" from="AND/InputA" to="AND" method="_on_input_pressed"]
-[connection signal="pressed" from="AND/InputB" to="AND" method="_on_input_pressed"]
-[connection signal="pressed" from="OR/InputA" to="OR" method="_on_input_pressed"]
-[connection signal="pressed" from="OR/InputB" to="OR" method="_on_input_pressed"]

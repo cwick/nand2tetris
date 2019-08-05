@@ -6,7 +6,10 @@ var _and = AND.new()
 var _not = NOT.new()
 
 func apply(a: bool, b: bool) -> bool:
-	return _not.apply(_and.apply(_not.apply(a), _not.apply(b)))
+	return _not.apply(
+		_and.apply(
+			_not.apply(a),
+			_not.apply(b)))
 	
 func _notification(what):
 	if what == NOTIFICATION_PREDELETE:
