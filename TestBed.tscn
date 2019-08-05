@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://TestRunner.gd" type="Script" id=1]
 [ext_resource path="res://chips/nand/NAND.tscn" type="PackedScene" id=2]
@@ -8,8 +8,25 @@
 [ext_resource path="res://chips/xor/XOR.tscn" type="PackedScene" id=6]
 [ext_resource path="res://chips/mux/MUX.tscn" type="PackedScene" id=7]
 [ext_resource path="res://chips/dmux/DMUX.tscn" type="PackedScene" id=8]
+[ext_resource path="res://chips/not16/NOT16.tscn" type="PackedScene" id=9]
 
-[node name="Root" type="Node2D"]
+[node name="Root" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_horizontal_guides_": [  ],
+"_edit_lock_": true
+}
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -56.0
+margin_top = 10.0
+margin_right = 56.0
+margin_bottom = 14.0
+text = "Basic Logic Gates"
+uppercase = true
 
 [node name="NAND" type="Node2D" parent="."]
 script = ExtResource( 1 )
@@ -229,3 +246,31 @@ margin_left = 70.0
 margin_top = 20.0
 margin_right = 120.0
 margin_bottom = 70.0
+
+[node name="Not16" type="Node2D" parent="."]
+position = Vector2( 270, 10 )
+script = ExtResource( 1 )
+chip = NodePath("Not16")
+
+[node name="Output" type="Label" parent="Not16"]
+margin_left = 200.0
+margin_top = 30.0
+margin_right = 253.0
+margin_bottom = 44.0
+text = "Output"
+
+[node name="Input0" type="LineEdit" parent="Not16"]
+margin_left = -20.0
+margin_top = 24.0
+margin_right = 110.0
+margin_bottom = 48.0
+text = "0000000000000000"
+align = 2
+max_length = 16
+expand_to_text_length = true
+
+[node name="Not16" parent="Not16" instance=ExtResource( 9 )]
+margin_left = 130.0
+margin_top = 10.0
+margin_right = 180.0
+margin_bottom = 60.0

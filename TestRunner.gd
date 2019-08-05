@@ -16,7 +16,10 @@ func _ready():
 		return
 	
 	for input in get_inputs():
-		input.connect("pressed", self, "_on_input_pressed")
+		if input is LineEdit:
+			input.connect("text_changed", self, "_on_text_input")
+		else:
+			input.connect("pressed", self, "_on_input")
 	
 	run()
 	
@@ -24,7 +27,15 @@ func run():
 	var _chip = get_node(chip)
 	var args = []
 	for input in get_inputs():
-		args.append(input.pressed)
+		if input is Button:
+			args.append(input.pressed)
+		elif input is LineEdit:
+			var arg := 0
+			for c in input.text:
+				if c == "0" or c == "1":
+					arg <<= 1
+					arg |= 1 if c == "1" else 0
+			args.append(arg)
 			
 	var result = _chip.callv("apply", args)
 	if result is Array:
@@ -45,6 +56,8 @@ func get_inputs():
 	
 	return input_list
 	
-	
-func _on_input_pressed():
+func _on_text_input(new_text):
+	run()
+		
+func _on_input():
 	run()
