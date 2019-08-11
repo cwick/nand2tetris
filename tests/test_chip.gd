@@ -62,22 +62,24 @@ func test_not_not():
 		0 0
 		""")
 
-# func test_and():
-# 	chip.add_part("nand1", NandChip.new())
-# 	chip.add_part("nand2", NandChip.new())
-# 	chip.connect_output("nand2")
-# 	chip.connect_part("nand1", 0, 0)
-# 	chip.connect_part("nand1", 1, 1)
-# 	chip.connect_part("nand2", 0, "nand1", 0)
-# 	chip.connect_part("nand2", 1, "nand1", 0)
+func test_and():
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_part("nand1", NandChip.new())
+	chip.add_part("nand2", NandChip.new())
+	chip.connect_output("nand2")
+	chip.connect_part("nand1", 0, "a")
+	chip.connect_part("nand1", 1, "b")
+	chip.connect_part("nand2", 0, "nand1")
+	chip.connect_part("nand2", 1, "nand1")
 
-# 	assert_truth_table(chip, 
-# 		"""
-# 		1 1 1
-# 		1 0 0
-# 		0 1 0
-# 		0 0 0
-# 		""")
+	assert_truth_table(chip, 
+		"""
+		1 1 1
+		1 0 0
+		0 1 0
+		0 0 0
+		""")
 
 func _make_not_chip():
 	var chip = Chip.new()
