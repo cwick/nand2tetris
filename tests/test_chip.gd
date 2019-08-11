@@ -20,14 +20,18 @@ func test_empty_chip():
 	assert_false(chip.evaluate([]))
 
 func test_true_chip():
-	chip.parts.append(TrueChip.new())
+	chip.add_part("true", TrueChip.new())
+	chip.connect_output("true")
+	
 	assert_true(chip.evaluate([]))
 
 func test_nand():
-	chip.parts.append(NandChip.new())
+	chip.add_part("nand", NandChip.new())
+	chip.connect_output("nand")
 	chip.input_pin_count = 2
 	chip.connect_part("nand", 0, 0)
 	chip.connect_part("nand", 1, 1)
+	chip.connect_output("nand")
 
 	assert_truth_table(chip, 
 		"""
@@ -38,10 +42,12 @@ func test_nand():
 		""")
 
 func test_not():
-	chip.parts.append(NandChip.new())
+	chip.add_part("not", NandChip.new())
+	chip.connect_output("not")
 	chip.input_pin_count = 1
 	chip.connect_part("nand", 0, 0)
 	chip.connect_part("nand", 1, 0)
+
 	assert_truth_table(chip, 
 		"""
 		1 0
@@ -49,8 +55,8 @@ func test_not():
 		""")
 
 # func test_and():
-# 	chip.parts.append(NandChip.new())
-# 	chip.parts.append(NandChip.new())
+# 	chip.add_part("", NandChip.new())
+# 	chip.add_part("", NandChip.new())
 # 	chip.input_pin_count = 2
 # 	chip.connect_part("nand1", 0, 0)
 # 	chip.connect_part("nand1", 1, 1)
