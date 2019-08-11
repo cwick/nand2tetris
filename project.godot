@@ -16,12 +16,16 @@ _global_script_class_icons={
 [application]
 
 config/name="Nand2Tetris"
-run/main_scene="res://TestBed.tscn"
+run/main_scene="res://tests/UnitTests.tscn"
 config/icon="res://icon.png"
 
 [debug]
 
 gdscript/warnings/return_value_discarded=false
+
+[editor_plugins]
+
+enabled=PoolStringArray( "gut" )
 
 [rendering]
 
