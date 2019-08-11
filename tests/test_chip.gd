@@ -79,8 +79,8 @@ func test_not():
 
 func _make_not_chip():
 	var chip = Chip.new()
-	chip.add_part("not", NandChip.new())
-	chip.connect_output("not")
+	chip.add_part("nand", NandChip.new())
+	chip.connect_output("nand")
 	chip.connect_part("nand", 0, 0)
 	chip.connect_part("nand", 1, 0)
 	return chip

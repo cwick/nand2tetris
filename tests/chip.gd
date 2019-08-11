@@ -1,31 +1,38 @@
 extends Reference
 
 var _parts = {}
-var _connections = {}
 var _output_part_name = null
+var _input_nodes = {}
 
 func evaluate(input):
 	if _parts.size() == 0:
 		return false
 
-	var output_node = ChipNode.new(_parts[_output_part_name])
-	for part_input_pin in _connections:
-		var chip_input_pin = _connections[part_input_pin]
-		output_node.add_child_at(InputNode.new(input, chip_input_pin), part_input_pin)
+	var output_node = _parts[_output_part_name]
+
+	for n in _input_nodes:
+		_input_nodes[n].bind_input(input)
 
 	return output_node.evaluate()
 
 func connect_part(part_name, part_input_pin, chip_input_pin):
-	_connections[part_input_pin] = chip_input_pin
+	var input_node
+	if _input_nodes.has(chip_input_pin):
+		input_node = _input_nodes[chip_input_pin]
+	else:
+		input_node = InputNode.new(chip_input_pin)
+		_input_nodes[chip_input_pin] = input_node
+
+	_parts[part_name].add_child_at(input_node, part_input_pin)
 
 func add_part(part_name, part):
-	_parts[part_name] = part
+	_parts[part_name] = ChipNode.new(part)
 
 func connect_output(part_name):
 	_output_part_name = part_name
 
 
-class ChipNode:
+class ChipNode extends Reference:
 	var _child_nodes = []
 	var _chip
 
@@ -45,13 +52,15 @@ class ChipNode:
 		_child_nodes[i] = child
 
 
-class InputNode:
+class InputNode extends Reference:
 	var _input
 	var _selector
 
-	func _init(input, selector):
-		_input = input
+	func _init(selector):
 		_selector = selector
+
+	func bind_input(input):
+		_input = input
 
 	func evaluate():
 		return _input[_selector]
