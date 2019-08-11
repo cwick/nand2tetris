@@ -63,21 +63,42 @@ func test_not_not():
 		""")
 
 func test_and():
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_part("nand1", NandChip.new())
-	chip.add_part("nand2", NandChip.new())
-	chip.connect_output("nand2")
-	chip.connect_part("nand1", 0, "a")
-	chip.connect_part("nand1", 1, "b")
-	chip.connect_part("nand2", 0, "nand1")
-	chip.connect_part("nand2", 1, "nand1")
-
-	assert_truth_table(chip, 
+	assert_truth_table(_make_and_chip(),
 		"""
 		1 1 1
 		1 0 0
 		0 1 0
+		0 0 0
+		""")
+
+func test_or():
+	var not_chip = _make_not_chip()
+	var and_chip = _make_and_chip()
+
+	#   not
+	#    |
+	#   and
+	#  |   |
+	# not  not
+
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_part("not1", not_chip)
+	chip.add_part("not2", not_chip)
+	chip.add_part("not3", not_chip)
+	chip.add_part("and", and_chip)
+	chip.connect_output("not3")
+	chip.connect_part("not3", 0, "and")
+	chip.connect_part("and", 0, "not1")
+	chip.connect_part("and", 1, "not2")
+	chip.connect_part("not1", 0, "a")
+	chip.connect_part("not2", 0, "b")
+
+	assert_truth_table(chip, 
+		"""
+		1 1 1
+		1 0 1
+		0 1 1
 		0 0 0
 		""")
 
@@ -88,6 +109,21 @@ func _make_not_chip():
 	chip.connect_output("nand")
 	chip.connect_part("nand", 0, "in")
 	chip.connect_part("nand", 1, "in")
+	return chip
+
+func _make_and_chip():
+	var nand = NandChip.new()
+	var chip = Chip.new()
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_part("nand1", nand)
+	chip.add_part("nand2", nand)
+	chip.connect_output("nand2")
+	chip.connect_part("nand1", 0, "a")
+	chip.connect_part("nand1", 1, "b")
+	chip.connect_part("nand2", 0, "nand1")
+	chip.connect_part("nand2", 1, "nand1")
+
 	return chip
 
 func assert_truth_table(chip, truth_table):

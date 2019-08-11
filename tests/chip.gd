@@ -8,6 +8,11 @@ func evaluate(input):
 	if _parts.size() == 0:
 		return false
 
+	if input.size() != _input_nodes.size():
+		printerr("Not enough inputs. Expected %d inputs, got %d" % 
+			[_input_nodes.size(), input.size()])
+		return false
+
 	var output_node = _parts[_output_part_name]
 
 	for n in _input_nodes:
