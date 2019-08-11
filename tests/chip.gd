@@ -1,14 +1,19 @@
 extends Reference
 
-var implementations = []
+var parts = []
+var input_pin_count = 0
+var _connections = {}
 
 func evaluate(input):
-	if implementations.size() > 0:
-		if input.size() > 0:
-			var a = implementations[0].evaluate([input[0], input[1]])
-			if implementations.size() > 1:
-				return implementations[1].evaluate([a, input[2]])
-			return a
+	if parts.size() == 0:
+		return false
 
-		return implementations[0].evaluate(input)
-	return false
+	var part_input = []
+	part_input.resize(parts[0].input_pin_count)
+	for i in range(parts[0].input_pin_count):
+		part_input[i] = input[_connections[i]]
+
+	return parts[0].evaluate(part_input)
+
+func connect_part(part_name, part_input_pin, chip_input_pin):
+	_connections[part_input_pin] = chip_input_pin

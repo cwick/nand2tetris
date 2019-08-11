@@ -2,14 +2,12 @@ extends "res://addons/gut/test.gd"
 const Chip = preload("res://tests/chip.gd")
 
 class TrueChip:
+	var input_pin_count = 0
 	func evaluate(input):
 		return true
 
-class AndChip:
-	func evaluate(input):
-		return input[0] and input[1]
-
 class NandChip:
+	var input_pin_count = 2
 	func evaluate(input):
 		return !(input[0] and input[1])
 
@@ -22,36 +20,14 @@ func test_empty_chip():
 	assert_false(chip.evaluate([]))
 
 func test_true_chip():
-	chip.implementations.append(TrueChip.new())
+	chip.parts.append(TrueChip.new())
 	assert_true(chip.evaluate([]))
 
-func test_and_with_two_inputs():
-	chip.implementations.append(AndChip.new())
-	assert_truth_table(chip, 
-		"""
-		1 1 1
-		1 0 0
-		0 1 0
-		0 0 0
-		""")
-
-func test_and_with_three_inputs():
-	chip.implementations.append(AndChip.new())
-	chip.implementations.append(AndChip.new())
-	assert_truth_table(chip, 
-		"""
-		1 1 1 1
-		1 1 0 0
-		1 0 1 0
-		1 0 0 0
-		0 1 1 0
-		0 1 0 0
-		0 0 1 0
-		0 0 0 0
-		""")
-
 func test_nand():
-	chip.implementations.append(NandChip.new())
+	chip.parts.append(NandChip.new())
+	chip.input_pin_count = 2
+	chip.connect_part("nand", 0, 0)
+	chip.connect_part("nand", 1, 1)
 
 	assert_truth_table(chip, 
 		"""
@@ -60,6 +36,33 @@ func test_nand():
 		0 1 1
 		0 0 1
 		""")
+
+func test_not():
+	chip.parts.append(NandChip.new())
+	chip.input_pin_count = 1
+	chip.connect_part("nand", 0, 0)
+	chip.connect_part("nand", 1, 0)
+	assert_truth_table(chip, 
+		"""
+		1 0
+		0 1
+		""")
+
+# func test_and():
+# 	chip.parts.append(NandChip.new())
+# 	chip.parts.append(NandChip.new())
+# 	chip.input_pin_count = 2
+# 	chip.connect_part("nand1", 0, 0)
+# 	chip.connect_part("nand1", 1, 1)
+# 	chip.connect_part("nand2", 0, "nand1", 0)
+# 	chip.connect_part("nand2", 1, "nand1", 0)
+# 	assert_truth_table(chip, 
+# 		"""
+# 		1 1 1
+# 		1 0 0
+# 		0 1 0
+# 		0 0 0
+# 		""")
 
 func assert_truth_table(chip, truth_table):
 	var no_allow_empty = false
