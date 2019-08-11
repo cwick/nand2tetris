@@ -9,22 +9,67 @@ class AndChip:
 	func evaluate(input):
 		return input[0] and input[1]
 
+class NandChip:
+	func evaluate(input):
+		return !(input[0] and input[1])
+
+var chip = null
+
+func before_each():
+	chip = Chip.new()
+
 func test_empty_chip():
-	var chip = Chip.new()
-	assert_false(chip.evaluate())
+	assert_false(chip.evaluate([]))
 
 func test_true_chip():
-	var chip = Chip.new()
-	chip.implementation = TrueChip.new()
-	assert_true(chip.evaluate())
+	chip.implementations.append(TrueChip.new())
+	assert_true(chip.evaluate([]))
 
-func test_and_true_true():
-	var chip = Chip.new()
-	chip.implementation = AndChip.new()
-	assert_true(chip.evaluate([true, true]))
+func test_and_with_two_inputs():
+	chip.implementations.append(AndChip.new())
+	assert_truth_table(chip, 
+		"""
+		true true true
+		true false false
+		false true false
+		false false false
+		""")
 
-func test_and_true_false():
-	var chip = Chip.new()
-	chip.implementation = AndChip.new()
-	assert_false(chip.evaluate([true, false]))
+func test_and_with_three_inputs():
+	chip.implementations.append(AndChip.new())
+	chip.implementations.append(AndChip.new())
+	assert_truth_table(chip, 
+		"""
+		true true true true
+		true true false false
+		true false true false
+		true false false false
+		false true true false
+		false true false false
+		false false true false
+		false false false false
+		""")
 
+func test_nand():
+	chip.implementations.append(NandChip.new())
+
+	assert_truth_table(chip, 
+		"""
+		true true false
+		true false true
+		false true true
+		false false true
+		""")
+
+func assert_truth_table(chip, truth_table):
+	var no_allow_empty = false
+	for line in truth_table.split("\n", no_allow_empty):
+		var entries = line.split(" ", no_allow_empty)
+		var input = []
+
+		for i in range(entries.size() - 1):
+			input.append(entries[i].strip_edges(true, true) == "true")
+
+		if input.size() > 0:
+			var expected_output = entries[-1] == "true"
+			assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
