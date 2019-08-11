@@ -23,13 +23,31 @@ func test_true_chip():
 
 	assert_true(chip.evaluate([]))
 
+func test_chip_inputs_are_false_when_not_connected():
+	chip.add_part("and", _make_and_chip())
+	chip.connect_output("and")
+
+	assert_truth_table(chip, 
+		"""
+		1 1 0
+		1 0 0
+		0 1 0
+		0 0 0
+		""")
+
+func test_chip_inputs_are_false_when_not_passed():
+	chip.add_part("and", _make_and_chip())
+	chip.connect_output("and")
+
+	assert_false(chip.evaluate([]))
+
 func test_nand():
-	chip.add_input("0", 0)
-	chip.add_input("1", 1)
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
 	chip.add_part("nand", NandChip.new())
 	chip.connect_output("nand")
-	chip.connect_part("nand", 0, "0")
-	chip.connect_part("nand", 1, "1")
+	chip.connect_part("nand", 0, "a")
+	chip.connect_part("nand", 1, "b")
 	chip.connect_output("nand")
 
 	assert_truth_table(chip, 
