@@ -66,13 +66,27 @@ func test_not():
 
 func assert_truth_table(chip, truth_table):
 	var no_allow_empty = false
-	for line in truth_table.split("\n", no_allow_empty):
-		var entries = line.split(" ", no_allow_empty)
+	for line in _clean_lines(truth_table.split("\n", no_allow_empty)):
+		var entries = _clean_entries(line.split(" ", no_allow_empty))
 		var input = []
 
 		for i in range(entries.size() - 1):
-			input.append(entries[i].strip_edges(true, true) == "1")
+			input.append(entries[i])
 
-		if input.size() > 0:
-			var expected_output = entries[-1] == "1"
-			assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
+		var expected_output = entries[-1]
+		assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
+
+func _clean_lines(lines):
+	var cleaned_lines = []
+	for line in lines:
+		var clean_line = line.strip_edges(true, true)
+		if clean_line != "":
+			cleaned_lines.append(clean_line)
+	return cleaned_lines
+
+func _clean_entries(entries):
+	var cleaned_entries = []
+	for entry in entries:
+		cleaned_entries.append(entry.strip_edges(true, true) == "1")
+	return cleaned_entries
+
