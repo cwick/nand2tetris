@@ -29,10 +29,10 @@ func test_and_with_two_inputs():
 	chip.implementations.append(AndChip.new())
 	assert_truth_table(chip, 
 		"""
-		true true true
-		true false false
-		false true false
-		false false false
+		1 1 1
+		1 0 0
+		0 1 0
+		0 0 0
 		""")
 
 func test_and_with_three_inputs():
@@ -40,14 +40,14 @@ func test_and_with_three_inputs():
 	chip.implementations.append(AndChip.new())
 	assert_truth_table(chip, 
 		"""
-		true true true true
-		true true false false
-		true false true false
-		true false false false
-		false true true false
-		false true false false
-		false false true false
-		false false false false
+		1 1 1 1
+		1 1 0 0
+		1 0 1 0
+		1 0 0 0
+		0 1 1 0
+		0 1 0 0
+		0 0 1 0
+		0 0 0 0
 		""")
 
 func test_nand():
@@ -55,10 +55,10 @@ func test_nand():
 
 	assert_truth_table(chip, 
 		"""
-		true true false
-		true false true
-		false true true
-		false false true
+		1 1 0
+		1 0 1
+		0 1 1
+		0 0 1
 		""")
 
 func assert_truth_table(chip, truth_table):
@@ -68,8 +68,8 @@ func assert_truth_table(chip, truth_table):
 		var input = []
 
 		for i in range(entries.size() - 1):
-			input.append(entries[i].strip_edges(true, true) == "true")
+			input.append(entries[i].strip_edges(true, true) == "1")
 
 		if input.size() > 0:
-			var expected_output = entries[-1] == "true"
+			var expected_output = entries[-1] == "1"
 			assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
