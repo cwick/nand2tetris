@@ -24,10 +24,12 @@ func test_true_chip():
 	assert_true(chip.evaluate([]))
 
 func test_nand():
+	chip.add_input("0", 0)
+	chip.add_input("1", 1)
 	chip.add_part("nand", NandChip.new())
 	chip.connect_output("nand")
-	chip.connect_part("nand", 0, 0)
-	chip.connect_part("nand", 1, 1)
+	chip.connect_part("nand", 0, "0")
+	chip.connect_part("nand", 1, "1")
 	chip.connect_output("nand")
 
 	assert_truth_table(chip, 
@@ -47,10 +49,11 @@ func test_not():
 
 func test_not_not():
 	var not_chip = _make_not_chip()
+	chip.add_input("in", 0)
 	chip.add_part("not1", not_chip)
 	chip.add_part("not2", not_chip)
 	chip.connect_output("not2")
-	chip.connect_part("not1", 0, 0)
+	chip.connect_part("not1", 0, "in")
 	chip.connect_part("not2", 0, "not1")
 
 	assert_truth_table(chip,
@@ -78,10 +81,11 @@ func test_not_not():
 
 func _make_not_chip():
 	var chip = Chip.new()
+	chip.add_input("in", 0)
 	chip.add_part("nand", NandChip.new())
 	chip.connect_output("nand")
-	chip.connect_part("nand", 0, 0)
-	chip.connect_part("nand", 1, 0)
+	chip.connect_part("nand", 0, "in")
+	chip.connect_part("nand", 1, "in")
 	return chip
 
 func assert_truth_table(chip, truth_table):
