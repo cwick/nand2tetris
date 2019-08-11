@@ -133,6 +133,43 @@ func test_xor():
 		0 0 0
 		""")
 
+func test_mux():
+	var not_chip = _make_not_chip()
+	var and_chip = _make_and_chip()
+	var or_chip = _make_or_chip(not_chip, and_chip)
+
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_input("selector", 2)
+
+	chip.add_part("or", or_chip)
+	chip.add_part("not", not_chip)
+	chip.add_part("and1", and_chip)
+	chip.add_part("and2", and_chip)
+
+	chip.connect_part("or", 0, "and1")
+	chip.connect_part("or", 1, "and2")
+	chip.connect_part("and1", 0, "not")
+	chip.connect_part("and1", 1, "a")
+	chip.connect_part("and2", 0, "b")
+	chip.connect_part("and2", 1, "selector")
+	chip.connect_part("not", 0, "selector")
+
+	chip.connect_output("or")
+	assert_truth_table(chip,
+		#  a b selector
+		"""
+		0 0 0 0
+		0 1 0 0
+		1 0 0 1
+		1 1 0 1
+
+		0 0 1 0
+		0 1 1 1
+		1 0 1 0
+		1 1 1 1
+		""")
+
 func _test_or(and_chip):
 	var not_chip = _make_not_chip()
 	assert_truth_table(_make_or_chip(not_chip, and_chip), 
