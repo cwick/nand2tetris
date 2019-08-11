@@ -2,12 +2,10 @@ extends "res://addons/gut/test.gd"
 const Chip = preload("res://tests/chip.gd")
 
 class TrueChip:
-	var input_pin_count = 0
 	func evaluate(input):
 		return true
 
 class NandChip:
-	var input_pin_count = 2
 	func evaluate(input):
 		return !(input[0] and input[1])
 

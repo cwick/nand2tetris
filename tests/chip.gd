@@ -16,22 +16,28 @@ func evaluate(input):
 	return output_node.evaluate()
 
 func connect_part(part_name, part_input_pin, chip_input_pin_or_part_name):
-	var input_node
-	var chip_input_pin = chip_input_pin_or_part_name
+	var node
 
 	if typeof(chip_input_pin_or_part_name) == TYPE_INT:
-		if _input_nodes.has(chip_input_pin):
-			input_node = _input_nodes[chip_input_pin]
-		else:
-			input_node = InputNode.new(chip_input_pin)
-			_input_nodes[chip_input_pin] = input_node
-
-		_parts[part_name].add_child_at(input_node, part_input_pin)
+		node = _get_input_node(chip_input_pin_or_part_name)
 	else:
-		var input_part_name = chip_input_pin_or_part_name
-		var node = _parts[input_part_name]
-		print(input_part_name)
-		_parts[part_name].add_child_at(node, part_input_pin)
+		node = _get_chip_node(chip_input_pin_or_part_name)
+
+	_parts[part_name].add_child_at(node, part_input_pin)
+
+func _get_input_node(chip_input_pin):
+	var input_node
+
+	if _input_nodes.has(chip_input_pin):
+		input_node = _input_nodes[chip_input_pin]
+	else:
+		input_node = InputNode.new(chip_input_pin)
+		_input_nodes[chip_input_pin] = input_node
+
+	return input_node
+
+func _get_chip_node(input_part_name):
+	return _parts[input_part_name]
 
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
