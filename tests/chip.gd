@@ -1,5 +1,3 @@
-extends Reference
-
 var _parts = {}
 var _output_part_name = null
 var _input_nodes = {}
@@ -39,7 +37,7 @@ func connect_output(part_name):
 	_output_part_name = part_name
 
 
-class ChipNode extends Reference:
+class ChipNode:
 	var _child_nodes = []
 	var _chip
 
@@ -59,7 +57,7 @@ class ChipNode extends Reference:
 		_child_nodes[i] = child
 
 
-class InputNode extends Reference:
+class InputNode:
 	var _input
 	var _selector
 

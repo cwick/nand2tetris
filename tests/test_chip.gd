@@ -71,9 +71,18 @@ func test_and():
 		0 0 0
 		""")
 
-func test_or():
+func test_or_with_constructed_chips():
+	_test_or(_make_and_chip())
+
+class NativeAnd:
+	func evaluate(input):
+		return input[0] && input[1]
+
+func test_or_with_mix_of_native_and_constructed_chips():
+	_test_or(NativeAnd.new())
+
+func _test_or(and_chip):
 	var not_chip = _make_not_chip()
-	var and_chip = _make_and_chip()
 
 	#   not
 	#    |
