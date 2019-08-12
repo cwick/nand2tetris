@@ -60,8 +60,8 @@ func test_chip_inputs_are_false_when_not_passed():
 	assert_false(chip.evaluate([]))
 
 func test_nand():
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
+	chip.add_input("a")
+	chip.add_input("b")
 	chip.add_part("nand", NativeNand.new())
 	chip.connect_output("nand")
 	chip.connect_part("nand", "a", "a")
@@ -84,7 +84,7 @@ func test_not():
 
 func test_not_not():
 	var not_chip = _make_not_chip()
-	chip.add_input("in", 0)
+	chip.add_input("in")
 	chip.add_part("not1", not_chip)
 	chip.add_part("not2", not_chip)
 	chip.connect_output("not2")
@@ -117,8 +117,8 @@ func test_xor():
 	var and_chip = _make_and_chip()
 	var or_chip = _make_or_chip(not_chip, and_chip)
 
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
+	chip.add_input("a")
+	chip.add_input("b")
 	chip.add_part("and", and_chip)
 	chip.add_part("or1", or_chip)
 	chip.add_part("or2", or_chip)
@@ -151,9 +151,9 @@ func test_mux():
 	var and_chip = _make_and_chip()
 	var or_chip = _make_or_chip(not_chip, and_chip)
 
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_input("selector", 2)
+	chip.add_input("a")
+	chip.add_input("b")
+	chip.add_input("selector")
 
 	chip.add_part("or", or_chip)
 	chip.add_part("not", not_chip)
@@ -187,8 +187,8 @@ func test_mux():
 # 	var not_chip = _make_not_chip()
 # 	var and_chip = _make_and_chip()
 
-# 	chip.add_input("in", 0)
-# 	chip.add_input("selector", 1)
+# 	chip.add_input("in")
+# 	chip.add_input("selector")
 
 # 	chip.add_part("and1", and_chip)
 # 	chip.add_part("and2", and_chip)
@@ -222,7 +222,7 @@ func _test_or(and_chip):
 
 func _make_not_chip():
 	var chip = Chip.new()
-	chip.add_input("in", 0)
+	chip.add_input("in")
 	chip.add_part("nand", NativeNand.new())
 	chip.connect_output("nand")
 	chip.connect_part("nand", "a", "in")
@@ -232,8 +232,8 @@ func _make_not_chip():
 func _make_and_chip():
 	var nand = NativeNand.new()
 	var chip = Chip.new()
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
+	chip.add_input("a")
+	chip.add_input("b")
 	chip.add_part("nand1", nand)
 	chip.add_part("nand2", nand)
 	chip.connect_output("nand2")
@@ -246,8 +246,8 @@ func _make_and_chip():
 
 func _make_or_chip(not_chip, and_chip):
 	var chip = Chip.new()
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
+	chip.add_input("a")
+	chip.add_input("b")
 	chip.add_part("not1", not_chip)
 	chip.add_part("not2", not_chip)
 	chip.add_part("not3", not_chip)

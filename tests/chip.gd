@@ -27,7 +27,8 @@ func connect_part(part_name, part_pin, other_pin):
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
 
-func add_input(pin_name, pin_number):
+func add_input(pin_name):
+	var pin_number = _input_nodes.size()
 	_input_nodes[pin_name] = InputNode.new(pin_number)
 
 func connect_output(part_name):
