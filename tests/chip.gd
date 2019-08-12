@@ -2,6 +2,8 @@ var _parts = {}
 var _output_nodes = {}
 var _input_nodes = {}
 
+var output_pin_count setget ,_get_output_pin_count
+
 func evaluate(input):
 	for node in _input_nodes.values():
 		node.bind_input(input)
@@ -48,6 +50,9 @@ func get_input_pin_number(pin_name):
 
 func get_output_pin_number(pin_name):
 	return _output_nodes[pin_name].output_pin_number
+
+func _get_output_pin_count():
+	return _output_nodes.size()
 
 class ChipNode:
 	var _child_nodes = []

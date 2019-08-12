@@ -8,6 +8,11 @@ class NativeChip:
 	func get_output_pin_number(pin_name):
 		return self.output_pin_map[pin_name]
 
+	var output_pin_count setget ,_get_output_pin_count
+
+	func _get_output_pin_count():
+		return self.output_pin_map.size()
+
 class NativeNand extends NativeChip:
 	var input_pin_map = {
 		a = 0,
@@ -137,6 +142,29 @@ func test_not_not():
 		"""
 		1 1
 		0 0
+		""")
+
+func test_bitwise_not_with_two_bits():
+	var not_chip = _make_not_chip()
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_output("not_a", 0)
+	chip.add_output("not_b", 1)
+
+	chip.add_part("not_a", not_chip)
+	chip.add_part("not_b", not_chip)
+	chip.connect_output("not_a", "out", "not_a")
+	chip.connect_output("not_b", "out", "not_b")
+	chip.connect_input("not_a", "in", "a")
+	chip.connect_input("not_b", "in", "b")
+
+	assert_truth_table(chip,
+		# a b not_a not_b
+		"""
+		0 0 1 1
+		0 1 1 0
+		1 0 0 1
+		1 1 0 0
 		""")
 
 func test_and():
@@ -355,10 +383,13 @@ func assert_truth_table(chip, truth_table):
 		var entries = _clean_entries(line.split(" ", no_allow_empty))
 		var input = []
 
-		for i in range(entries.size() - 1):
+		for i in range(entries.size() - chip.output_pin_count):
 			input.append(entries[i])
 
-		var expected_output = [entries[-1]]
+		var expected_output = []
+		for i in range(chip.output_pin_count, 0, -1):
+			expected_output.append(entries[-i])
+
 		assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
 
 func _clean_lines(lines):
