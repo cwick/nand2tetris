@@ -145,18 +145,28 @@ func test_not_not():
 		""")
 
 func test_bitwise_not_with_two_bits():
-	var not_chip = _make_not_chip()
+	assert_truth_table(_make_bitwise_not_chip(),
+		# a b not_a not_b
+		"""
+		0 0 1 1
+		0 1 1 0
+		1 0 0 1
+		1 1 0 0
+		""")
+
+func test_chip_with_two_outputs():
+	var not_chip = _make_bitwise_not_chip()
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
 	chip.add_output("not_a", 0)
 	chip.add_output("not_b", 1)
 
-	chip.add_part("not_a", not_chip)
-	chip.add_part("not_b", not_chip)
-	chip.connect_output("not_a", "out", "not_a")
-	chip.connect_output("not_b", "out", "not_b")
-	chip.connect_input("not_a", "in", "a")
-	chip.connect_input("not_b", "in", "b")
+	chip.add_part("not", not_chip)
+
+	chip.connect_output("not", "not_a", "not_a")
+	chip.connect_output("not", "not_b", "not_b")
+	chip.connect_input("not", "a", "a")
+	chip.connect_input("not", "b", "b")
 
 	assert_truth_table(chip,
 		# a b not_a not_b
@@ -334,6 +344,24 @@ func _make_not_chip():
 
 	chip.connect_input("nand", "a", "in")
 	chip.connect_input("nand", "b", "in")
+	return chip
+
+func _make_bitwise_not_chip():
+	var not_chip = _make_not_chip()
+	var chip = Chip.new()
+
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_output("not_a", 0)
+	chip.add_output("not_b", 1)
+
+	chip.add_part("not_a", not_chip)
+	chip.add_part("not_b", not_chip)
+	chip.connect_output("not_a", "out", "not_a")
+	chip.connect_output("not_b", "out", "not_b")
+	chip.connect_input("not_a", "in", "a")
+	chip.connect_input("not_b", "in", "b")
+
 	return chip
 
 func _make_and_chip():

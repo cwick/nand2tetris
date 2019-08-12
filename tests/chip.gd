@@ -18,23 +18,24 @@ func evaluate(input):
 	return output
 
 func connect_part(part_name: String, part_pin: String, other_part: String):
-	var node = _parts[other_part]
+	var other_part_node = _parts[other_part]
 	var part = _parts[part_name]
 	var part_pin_number = part.get_input_pin_number(part_pin)
+	var connection = InternalPin.new(other_part_node, "todo_implement_me")
 
-	part.add_child_at(node, part_pin_number)
+	part.add_child_at(connection, part_pin_number)
 
 func connect_input(part_name: String, part_input_pin: String, input_pin: String):
 	var part = _parts[part_name]
-	var node = _input_nodes[input_pin]
+	var input_node = _input_nodes[input_pin]
 	var part_pin_number = part.get_input_pin_number(part_input_pin)
 
-	part.add_child_at(node, part_pin_number)
+	part.add_child_at(input_node, part_pin_number)
 
 func connect_output(part_name: String, part_output_pin: String, output_pin: String):
 	var part = _parts[part_name]
 	var output_node = _output_nodes[output_pin]
-	output_node.set_child(part)
+	output_node.set_child(InternalPin.new(part, part_output_pin))
 	
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
@@ -54,6 +55,21 @@ func get_output_pin_number(pin_name):
 func _get_output_pin_count():
 	return _output_nodes.size()
 
+class InternalPin:
+	var _chip_node: ChipNode
+	var _output_pin_selector: int
+
+	func _init(chip_node: ChipNode, output_pin_name: String):
+		_chip_node = chip_node
+		if output_pin_name == "todo_implement_me":
+			_output_pin_selector = 0
+		else:
+			_output_pin_selector = chip_node.get_output_pin_number(output_pin_name)
+
+	func evaluate() -> bool:
+		var result := _chip_node.evaluate()
+		return result[_output_pin_selector] as bool
+
 class ChipNode:
 	var _child_nodes = []
 	var _chip
@@ -61,11 +77,11 @@ class ChipNode:
 	func _init(chip):
 		_chip = chip
 		
-	func evaluate() -> bool:
+	func evaluate() -> Array:
 		var input_values = []
 		for child in _child_nodes:
 			input_values.append(child.evaluate())
-		return _chip.evaluate(input_values)[0]
+		return _chip.evaluate(input_values)
 
 	func add_child_at(child, i):
 		if i >= _child_nodes.size() - 1:
@@ -96,15 +112,15 @@ class InputNode:
 
 class OutputNode:
 	var output_pin_number: int
-	var _chip: ChipNode
+	var _child: InternalPin
 
 	func _init(pin_number: int):
 		output_pin_number = pin_number
 
-	func set_child(chip):
-		_chip = chip
+	func set_child(child):
+		_child = child
 
 	func evaluate() -> bool:
-		if _chip == null:
+		if _child == null:
 			return false
-		return _chip.evaluate()
+		return _child.evaluate()
