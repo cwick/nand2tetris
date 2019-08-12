@@ -230,6 +230,35 @@ func test_mux():
 		1 1 1 1
 		""")
 
+func test_and_with_three_inputs():
+	var and_chip = _make_and_chip()
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_input("c", 2)
+	chip.add_output("out", 0)
+
+	chip.add_part("and1", and_chip)
+	chip.add_part("and2", and_chip)
+
+	chip.connect_input("and1", "a", "a")
+	chip.connect_input("and1", "b", "b")
+	chip.connect_input("and2", "b", "c")
+	chip.connect_part("and2", "a", "and1")
+	chip.connect_output("and2", "out", "out")
+
+	assert_truth_table(chip,
+		"""
+		0 0 0 0
+		0 1 0 0
+		1 0 0 0
+		1 1 0 0
+
+		0 0 1 0
+		0 1 1 0
+		1 0 1 0
+		1 1 1 1
+		""")
+
 # func test_dmux():
 # 	var not_chip = _make_not_chip()
 # 	var and_chip = _make_and_chip()

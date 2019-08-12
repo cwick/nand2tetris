@@ -22,17 +22,17 @@ func connect_part(part_name: String, part_pin: String, other_part: String):
 
 	part.add_child_at(node, part_pin_number)
 
-func connect_input(part_name: String, part_pin: String, input_pin: String):
+func connect_input(part_name: String, part_input_pin: String, input_pin: String):
 	var part = _parts[part_name]
 	var node = _input_nodes[input_pin]
-	var part_pin_number = part.get_input_pin_number(part_pin)
+	var part_pin_number = part.get_input_pin_number(part_input_pin)
 
 	part.add_child_at(node, part_pin_number)
 
-func connect_output(part_name: String, part_pin: String, output_pin: String):
+func connect_output(part_name: String, part_output_pin: String, output_pin: String):
 	var part = _parts[part_name]
 	var output_node = _output_nodes[output_pin]
-	output_node.set_child(part, part_pin)
+	output_node.set_child(part, part_output_pin)
 	
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
