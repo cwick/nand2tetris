@@ -5,9 +5,27 @@ class TrueChip:
 	func evaluate(input):
 		return true
 
-class NandChip:
+class NativeChip:
+	var _pins = null
+	func get_pin_number(pin_name):
+		if _pins == null:
+			_pins = {}
+			for i in range(self.inputs.size()):
+				_pins[self.inputs[i]] = i
+
+		return _pins[pin_name]
+
+class NativeNand extends NativeChip:
+	var inputs = ["a", "b"]
+
 	func evaluate(input):
 		return !(input[0] and input[1])
+
+class NativeAnd extends NativeChip:
+	var inputs = ["a", "b"]
+
+	func evaluate(input):
+		return input[0] && input[1]
 
 var chip = null
 
@@ -44,11 +62,10 @@ func test_chip_inputs_are_false_when_not_passed():
 func test_nand():
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
-	chip.add_part("nand", NandChip.new())
+	chip.add_part("nand", NativeNand.new())
 	chip.connect_output("nand")
-	chip.connect_part("nand", 0, "a")
-	chip.connect_part("nand", 1, "b")
-	chip.connect_output("nand")
+	chip.connect_part("nand", "a", "a")
+	chip.connect_part("nand", "b", "b")
 
 	assert_truth_table(chip, 
 		"""
@@ -71,8 +88,8 @@ func test_not_not():
 	chip.add_part("not1", not_chip)
 	chip.add_part("not2", not_chip)
 	chip.connect_output("not2")
-	chip.connect_part("not1", 0, "in")
-	chip.connect_part("not2", 0, "not1")
+	chip.connect_part("not1", "in", "in")
+	chip.connect_part("not2", "in", "not1")
 
 	assert_truth_table(chip,
 		"""
@@ -92,10 +109,6 @@ func test_and():
 func test_or_with_constructed_chips():
 	_test_or(_make_and_chip())
 
-class NativeAnd:
-	func evaluate(input):
-		return input[0] && input[1]
-
 func test_or_with_mix_of_native_and_constructed_chips():
 	_test_or(NativeAnd.new())
 
@@ -114,16 +127,16 @@ func test_xor():
 
 	chip.connect_output("and")
 
-	chip.connect_part("and", 0, "or1")
-	chip.connect_part("and", 1, "or2")
+	chip.connect_part("and", "a", "or1")
+	chip.connect_part("and", "b", "or2")
 
-	chip.connect_part("or1", 0, "a")
-	chip.connect_part("or1", 1, "b")
-	chip.connect_part("or2", 0, "not1")
-	chip.connect_part("or2", 1, "not2")
+	chip.connect_part("or1", "a", "a")
+	chip.connect_part("or1", "b", "b")
+	chip.connect_part("or2", "a", "not1")
+	chip.connect_part("or2", "b", "not2")
 
-	chip.connect_part("not1", 0, "a")
-	chip.connect_part("not2", 0, "b")
+	chip.connect_part("not1", "in", "a")
+	chip.connect_part("not2", "in", "b")
 
 	assert_truth_table(chip, 
 		"""
@@ -147,13 +160,13 @@ func test_mux():
 	chip.add_part("and1", and_chip)
 	chip.add_part("and2", and_chip)
 
-	chip.connect_part("or", 0, "and1")
-	chip.connect_part("or", 1, "and2")
-	chip.connect_part("and1", 0, "not")
-	chip.connect_part("and1", 1, "a")
-	chip.connect_part("and2", 0, "b")
-	chip.connect_part("and2", 1, "selector")
-	chip.connect_part("not", 0, "selector")
+	chip.connect_part("or", "a", "and1")
+	chip.connect_part("or", "b", "and2")
+	chip.connect_part("and1", "a", "not")
+	chip.connect_part("and1", "b", "a")
+	chip.connect_part("and2", "a", "b")
+	chip.connect_part("and2", "b", "selector")
+	chip.connect_part("not", "in", "selector")
 
 	chip.connect_output("or")
 	assert_truth_table(chip,
@@ -170,6 +183,33 @@ func test_mux():
 		1 1 1 1
 		""")
 
+# func test_dmux():
+# 	var not_chip = _make_not_chip()
+# 	var and_chip = _make_and_chip()
+
+# 	chip.add_input("in", 0)
+# 	chip.add_input("selector", 1)
+
+# 	chip.add_part("and1", and_chip)
+# 	chip.add_part("and2", and_chip)
+# 	chip.add_part("not", not_chip)
+
+# 	chip.connect_part("and1", 0, "not")
+# 	chip.connect_part("and1", 1, "in")
+# 	chip.connect_part("and2", 0, "in")
+# 	chip.connect_part("and2", 1, "selector")
+# 	chip.connect_part("not", 0, "selector")
+
+# 	assert_truth_table(chip,
+# 		#  in selector => a b
+# 		"""
+# 		1 1 0 1 
+# 		1 0 1 0
+# 		0 1 0 0
+# 		0 0 0 0
+# 		""")
+
+
 func _test_or(and_chip):
 	var not_chip = _make_not_chip()
 	assert_truth_table(_make_or_chip(not_chip, and_chip), 
@@ -183,24 +223,24 @@ func _test_or(and_chip):
 func _make_not_chip():
 	var chip = Chip.new()
 	chip.add_input("in", 0)
-	chip.add_part("nand", NandChip.new())
+	chip.add_part("nand", NativeNand.new())
 	chip.connect_output("nand")
-	chip.connect_part("nand", 0, "in")
-	chip.connect_part("nand", 1, "in")
+	chip.connect_part("nand", "a", "in")
+	chip.connect_part("nand", "b", "in")
 	return chip
 
 func _make_and_chip():
-	var nand = NandChip.new()
+	var nand = NativeNand.new()
 	var chip = Chip.new()
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
 	chip.add_part("nand1", nand)
 	chip.add_part("nand2", nand)
 	chip.connect_output("nand2")
-	chip.connect_part("nand1", 0, "a")
-	chip.connect_part("nand1", 1, "b")
-	chip.connect_part("nand2", 0, "nand1")
-	chip.connect_part("nand2", 1, "nand1")
+	chip.connect_part("nand1", "a", "a")
+	chip.connect_part("nand1", "b", "b")
+	chip.connect_part("nand2", "a", "nand1")
+	chip.connect_part("nand2", "b", "nand1")
 
 	return chip
 
@@ -213,11 +253,11 @@ func _make_or_chip(not_chip, and_chip):
 	chip.add_part("not3", not_chip)
 	chip.add_part("and", and_chip)
 	chip.connect_output("not3")
-	chip.connect_part("not3", 0, "and")
-	chip.connect_part("and", 0, "not1")
-	chip.connect_part("and", 1, "not2")
-	chip.connect_part("not1", 0, "a")
-	chip.connect_part("not2", 0, "b")
+	chip.connect_part("not3", "in", "and")
+	chip.connect_part("and", "a", "not1")
+	chip.connect_part("and", "b", "not2")
+	chip.connect_part("not1", "in", "a")
+	chip.connect_part("not2", "in", "b")
 
 	return chip
 
