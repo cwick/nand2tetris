@@ -48,7 +48,8 @@ func before_each():
 	chip = Chip.new()
 
 func test_empty_chip():
-	assert_false(chip.evaluate([]))
+	var result = chip.evaluate([])
+	assert_eq(result.size(), 0, "Expected empty result")
 
 func test_true_chip():
 	chip.add_part("true", TrueChip.new())

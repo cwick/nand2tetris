@@ -3,9 +3,6 @@ var _output_nodes = {}
 var _input_nodes = {}
 
 func evaluate(input):
-	if _parts.size() == 0:
-		return false
-
 	for node in _input_nodes.values():
 		node.bind_input(input)
 
