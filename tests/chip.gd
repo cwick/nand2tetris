@@ -13,17 +13,23 @@ func evaluate(input):
 
 	return output_node.evaluate()
 
-func connect_part(part_name, part_pin, other_pin):
-	var node
+func connect_part(part_name, part_pin, other_part):
+	var node = _parts[other_part]
 	var part = _parts[part_name]
 	var part_pin_number = part.get_pin_number(part_pin)
 
-	node = _input_nodes.get(other_pin)
-	if node == null:
-		node = _parts[other_pin]
+	part.add_child_at(node, part_pin_number)
+
+func connect_input(input_pin, part_name, part_pin):
+	var part = _parts[part_name]
+	var node = _input_nodes[input_pin]
+	var part_pin_number = part.get_pin_number(part_pin)
 
 	part.add_child_at(node, part_pin_number)
 
+func connect_output(part_name):
+	_output_part_name = part_name
+	
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
 
@@ -31,8 +37,6 @@ func add_input(pin_name):
 	var pin_number = _input_nodes.size()
 	_input_nodes[pin_name] = InputNode.new(pin_number)
 
-func connect_output(part_name):
-	_output_part_name = part_name
 
 func get_pin_number(pin_name):
 	return _input_nodes[pin_name]._selector
