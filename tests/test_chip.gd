@@ -57,11 +57,29 @@ func test_true_chip():
 
 	assert_true(chip.evaluate([])[0])
 
-# TODO: need similar test for output
 func test_chip_inputs_are_false_when_not_connected():
 	chip.add_output("out", 0)
+	chip.add_input("a", 0)
+	chip.add_input("b", 0)
 	chip.add_part("and", _make_and_chip())
 	chip.connect_output("and", "out", "out")
+
+	assert_truth_table(chip, 
+		"""
+		1 1 0
+		1 0 0
+		0 1 0
+		0 0 0
+		""")
+
+func test_chip_outputs_are_false_when_not_connected():
+	chip.add_part("and", _make_and_chip())
+	chip.add_output("out", 0)
+	chip.add_input("a", 0)
+	chip.add_input("b", 0)
+
+	chip.connect_input("and", "a", "a")
+	chip.connect_input("and", "b", "b")
 
 	assert_truth_table(chip, 
 		"""

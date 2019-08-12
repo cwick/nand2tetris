@@ -105,4 +105,6 @@ class OutputNode:
 		_chip_output_pin_name = chip_output_pin
 
 	func evaluate() -> bool:
+		if _chip == null:
+			return false
 		return _chip.evaluate()
