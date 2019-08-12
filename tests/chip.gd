@@ -20,8 +20,7 @@ func connect_part(part_name: String, part_pin: String, other_part: String):
 
 	part.add_child_at(node, part_pin_number)
 
-# TODO: put input_pin last
-func connect_input(input_pin: String, part_name: String, part_pin: String):
+func connect_input(part_name: String, part_pin: String, input_pin: String):
 	var part = _parts[part_name]
 	var node = _input_nodes[input_pin]
 	var part_pin_number = part.get_pin_number(part_pin)
