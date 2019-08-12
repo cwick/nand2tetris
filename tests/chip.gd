@@ -34,7 +34,7 @@ func connect_input(part_name: String, part_input_pin: String, input_pin: String)
 func connect_output(part_name: String, part_output_pin: String, output_pin: String):
 	var part = _parts[part_name]
 	var output_node = _output_nodes[output_pin]
-	output_node.set_child(part, part_output_pin)
+	output_node.set_child(part)
 	
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
@@ -97,14 +97,12 @@ class InputNode:
 class OutputNode:
 	var output_pin_number: int
 	var _chip: ChipNode
-	var _chip_output_pin_name: String
 
 	func _init(pin_number: int):
 		output_pin_number = pin_number
 
-	func set_child(chip, chip_output_pin: String):
+	func set_child(chip):
 		_chip = chip
-		_chip_output_pin_name = chip_output_pin
 
 	func evaluate() -> bool:
 		if _chip == null:
