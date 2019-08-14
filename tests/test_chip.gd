@@ -136,7 +136,7 @@ func test_not_not():
 	chip.add_part("not2", not_chip)
 	chip.connect_output("not2", "out", "out")
 	chip.connect_input("not1", "in", "in")
-	chip.connect_part("not2", "in", "not1")
+	chip.connect_part("not2", "in", "not1", "out")
 
 	assert_truth_table(chip,
 		"""
@@ -209,11 +209,11 @@ func test_xor():
 
 	chip.connect_output("and", "out", "out")
 
-	chip.connect_part("and", "a", "or1")
-	chip.connect_part("and", "b", "or2")
+	chip.connect_part("and", "a", "or1", "out")
+	chip.connect_part("and", "b", "or2", "out")
 
-	chip.connect_part("or2", "a", "not1")
-	chip.connect_part("or2", "b", "not2")
+	chip.connect_part("or2", "a", "not1", "out")
+	chip.connect_part("or2", "b", "not2", "out")
 
 	chip.connect_input("not1", "in", "a")
 	chip.connect_input("not2", "in", "b")
@@ -245,9 +245,9 @@ func test_mux():
 
 	chip.connect_output("or", "out", "out")
 
-	chip.connect_part("or", "a", "and1")
-	chip.connect_part("or", "b", "and2")
-	chip.connect_part("and1", "a", "not")
+	chip.connect_part("or", "a", "and1", "out")
+	chip.connect_part("or", "b", "and2", "out")
+	chip.connect_part("and1", "a", "not", "out")
 
 	chip.connect_input("and1", "b", "a")
 	chip.connect_input("and2", "a", "b")
@@ -281,7 +281,7 @@ func test_and_with_three_inputs():
 	chip.connect_input("and1", "a", "a")
 	chip.connect_input("and1", "b", "b")
 	chip.connect_input("and2", "b", "c")
-	chip.connect_part("and2", "a", "and1")
+	chip.connect_part("and2", "a", "and1", "out")
 	chip.connect_output("and2", "out", "out")
 
 	assert_truth_table(chip,
@@ -297,6 +297,31 @@ func test_and_with_three_inputs():
 		1 1 1 1
 		""")
 
+func test_connect_chip_with_multiple_outputs():
+	var bitwise_not_chip = _make_bitwise_not_chip()
+	var not_chip = _make_not_chip()
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_output("out", 0)
+
+	chip.add_part("bitwise_not", bitwise_not_chip)
+	chip.add_part("not", not_chip)
+
+	chip.connect_input("bitwise_not", "a", "a")
+	chip.connect_input("bitwise_not", "b", "b")
+	chip.connect_part("not", "in", "bitwise_not", "not_b")
+
+	chip.connect_output("not", "out", "out")
+
+	assert_truth_table(chip,
+		# Selects the second bit
+		"""
+		1 1 1
+		0 1 1
+		1 0 0
+		0 0 0
+		""")
+
 # func test_dmux():
 # 	var not_chip = _make_not_chip()
 # 	var and_chip = _make_and_chip()
@@ -308,11 +333,11 @@ func test_and_with_three_inputs():
 # 	chip.add_part("and2", and_chip)
 # 	chip.add_part("not", not_chip)
 
-# 	chip.connect_part("and1", 0, "not")
-# 	chip.connect_part("and1", 1, "in")
-# 	chip.connect_part("and2", 0, "in")
-# 	chip.connect_part("and2", 1, "selector")
-# 	chip.connect_part("not", 0, "selector")
+# 	chip.connect_part("and1", 0, "not", "out")
+# 	chip.connect_part("and1", 1, "in", "out")
+# 	chip.connect_part("and2", 0, "in", "out")
+# 	chip.connect_part("and2", 1, "selector", "out")
+# 	chip.connect_part("not", 0, "selector", "out")
 
 # 	assert_truth_table(chip,
 # 		#  in selector => a b
@@ -375,8 +400,8 @@ func _make_and_chip():
 
 	chip.connect_output("nand2", "out", "out")
 
-	chip.connect_part("nand2", "a", "nand1")
-	chip.connect_part("nand2", "b", "nand1")
+	chip.connect_part("nand2", "a", "nand1", "out")
+	chip.connect_part("nand2", "b", "nand1", "out")
 
 	chip.connect_input("nand1", "a", "a")
 	chip.connect_input("nand1", "b", "b")
@@ -396,9 +421,9 @@ func _make_or_chip(not_chip, and_chip):
 
 	chip.connect_output("not3", "out", "out")
 
-	chip.connect_part("not3", "in", "and")
-	chip.connect_part("and", "a", "not1")
-	chip.connect_part("and", "b", "not2")
+	chip.connect_part("not3", "in", "and", "out")
+	chip.connect_part("and", "a", "not1", "out")
+	chip.connect_part("and", "b", "not2", "out")
 
 	chip.connect_input("not1", "in", "a")
 	chip.connect_input("not2", "in", "b")

@@ -16,10 +16,11 @@ func evaluate(input):
 
 	return output
 
-func connect_part(part_name: String, part_input_pin: String, other_part: String):
+func connect_part(part_name: String, part_input_pin: String,
+				  other_part: String, other_part_output_pin: String):
 	var other_part_node = _parts[other_part]
 	var part = _parts[part_name]
-	var connection = InternalPin.new(other_part_node, "pin_zero_todo")
+	var connection = InternalPin.new(other_part_node, other_part_output_pin)
 
 	part.add_child_at(connection, part_input_pin)
 
@@ -60,10 +61,7 @@ class InternalPin:
 
 	func _init(chip_node: ChipNode, output_pin_name: String):
 		_chip_node = chip_node
-		if output_pin_name == "pin_zero_todo":
-			_output_pin_selector = 0
-		else:
-			_output_pin_selector = chip_node.get_output_pin_number(output_pin_name)
+		_output_pin_selector = chip_node.get_output_pin_number(output_pin_name)
 
 	func evaluate() -> bool:
 		var result := _chip_node.evaluate()
