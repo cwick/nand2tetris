@@ -16,20 +16,18 @@ func evaluate(input):
 
 	return output
 
-func connect_part(part_name: String, part_pin: String, other_part: String):
+func connect_part(part_name: String, part_input_pin: String, other_part: String):
 	var other_part_node = _parts[other_part]
 	var part = _parts[part_name]
-	var part_pin_number = part.get_input_pin_number(part_pin)
-	var connection = InternalPin.new(other_part_node, "todo_implement_me")
+	var connection = InternalPin.new(other_part_node, "pin_zero_todo")
 
-	part.add_child_at(connection, part_pin_number)
+	part.add_child_at(connection, part_input_pin)
 
 func connect_input(part_name: String, part_input_pin: String, input_pin: String):
 	var part = _parts[part_name]
 	var input_node = _input_nodes[input_pin]
-	var part_pin_number = part.get_input_pin_number(part_input_pin)
 
-	part.add_child_at(input_node, part_pin_number)
+	part.add_child_at(input_node, part_input_pin)
 
 func connect_output(part_name: String, part_output_pin: String, output_pin: String):
 	var part = _parts[part_name]
@@ -62,7 +60,7 @@ class InternalPin:
 
 	func _init(chip_node: ChipNode, output_pin_name: String):
 		_chip_node = chip_node
-		if output_pin_name == "todo_implement_me":
+		if output_pin_name == "pin_zero_todo":
 			_output_pin_selector = 0
 		else:
 			_output_pin_selector = chip_node.get_output_pin_number(output_pin_name)
@@ -84,11 +82,12 @@ class ChipNode:
 			input_values.append(child.evaluate())
 		return _chip.evaluate(input_values)
 
-	func add_child_at(child, i):
-		if i >= _child_nodes.size() - 1:
-			_child_nodes.resize(i+1)
+	func add_child_at(child, pin_name: String):
+		var pin_number = get_input_pin_number(pin_name)
+		if pin_number >= _child_nodes.size() - 1:
+			_child_nodes.resize(pin_number + 1)
 
-		_child_nodes[i] = child
+		_child_nodes[pin_number] = child
 
 	func get_input_pin_number(pin_name) -> int:
 		return _chip.get_input_pin_number(pin_name)
