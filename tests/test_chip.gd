@@ -322,31 +322,35 @@ func test_connect_chip_with_multiple_outputs():
 		0 0 0
 		""")
 
-# func test_dmux():
-# 	var not_chip = _make_not_chip()
-# 	var and_chip = _make_and_chip()
+func test_dmux():
+	var not_chip = _make_not_chip()
+	var and_chip = _make_and_chip()
 
-# 	chip.add_input("in", 0)
-# 	chip.add_input("selector", 1)
+	chip.add_input("in", 0)
+	chip.add_input("selector", 1)
+	chip.add_output("a", 0)
+	chip.add_output("b", 1)
 
-# 	chip.add_part("and1", and_chip)
-# 	chip.add_part("and2", and_chip)
-# 	chip.add_part("not", not_chip)
+	chip.add_part("and1", and_chip)
+	chip.add_part("and2", and_chip)
+	chip.add_part("not", not_chip)
 
-# 	chip.connect_part("and1", 0, "not", "out")
-# 	chip.connect_part("and1", 1, "in", "out")
-# 	chip.connect_part("and2", 0, "in", "out")
-# 	chip.connect_part("and2", 1, "selector", "out")
-# 	chip.connect_part("not", 0, "selector", "out")
+	chip.connect_part("and1", "a", "not", "out")
+	chip.connect_input("and1", "b", "in")
+	chip.connect_input("and2", "a", "in")
+	chip.connect_input("and2", "b", "selector")
+	chip.connect_input("not", "in", "selector")
+	chip.connect_output("and1", "out", "a")
+	chip.connect_output("and2", "out", "b")
 
-# 	assert_truth_table(chip,
-# 		#  in selector => a b
-# 		"""
-# 		1 1 0 1 
-# 		1 0 1 0
-# 		0 1 0 0
-# 		0 0 0 0
-# 		""")
+	assert_truth_table(chip,
+		#  in selector => a b
+		"""
+		1 1 0 1 
+		1 0 1 0
+		0 1 0 0
+		0 0 0 0
+		""")
 
 
 func _test_or(and_chip):
