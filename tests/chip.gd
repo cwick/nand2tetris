@@ -1,5 +1,6 @@
 var _parts = {}
-var _output_nodes = {}
+var _output_pins = []
+var _output_pin_map = {}
 var _input_nodes = {}
 
 var output_pin_count setget ,_get_output_pin_count
@@ -9,11 +10,9 @@ func evaluate(input):
 		node.bind_input(input)
 
 	var output = []
-	output.resize(_output_nodes.size())
 
-	for node in _output_nodes.values():
-		var value = node.evaluate()
-		output[node.output_pin_number] = value
+	for pin in _output_pins:
+		output.append(pin.evaluate() if pin else false)
 
 	return output
 
@@ -34,8 +33,7 @@ func connect_input(part_name: String, part_input_pin: String, input_pin: String)
 
 func connect_output(part_name: String, part_output_pin: String, output_pin: String):
 	var part = _parts[part_name]
-	var output_node = _output_nodes[output_pin]
-	output_node.set_child(InternalPin.new(part, part_output_pin))
+	_output_pins[_output_pin_map[output_pin]] = InternalPin.new(part, part_output_pin)
 	
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
@@ -44,16 +42,19 @@ func add_input(pin_name, pin_number):
 	_input_nodes[pin_name] = InputNode.new(pin_number)
 
 func add_output(pin_name, pin_number):
-	_output_nodes[pin_name] = OutputNode.new(pin_number)
+	if pin_number >= _output_pins.size():
+		_output_pins.resize(pin_number + 1)
+
+	_output_pin_map[pin_name] = pin_number
 
 func get_input_pin_number(pin_name):
 	return _input_nodes[pin_name].input_pin_number
 
 func get_output_pin_number(pin_name):
-	return _output_nodes[pin_name].output_pin_number
+	return _output_pin_map[pin_name]
 
 func _get_output_pin_count():
-	return _output_nodes.size()
+	return _output_pins.size()
 
 class InternalPin:
 	var _chip_node: ChipNode
@@ -109,18 +110,3 @@ class InputNode:
 		if input_pin_number >= _input.size():
 			return false
 		return _input[input_pin_number]
-
-class OutputNode:
-	var output_pin_number: int
-	var _child: InternalPin
-
-	func _init(pin_number: int):
-		output_pin_number = pin_number
-
-	func set_child(child):
-		_child = child
-
-	func evaluate() -> bool:
-		if _child == null:
-			return false
-		return _child.evaluate()
