@@ -1,30 +1,8 @@
 extends "res://addons/gut/test.gd"
-const Chip = preload("res://tests/chip.gd")
-
-class NativeChip:
-	func get_input_pin_number(pin_name):
-		return self.input_pin_map[pin_name]
-
-	func get_output_pin_number(pin_name):
-		return self.output_pin_map[pin_name]
-
-	var output_pin_count setget ,_get_output_pin_count
-
-	func _get_output_pin_count():
-		return self.output_pin_map.size()
-
-class NativeNand extends NativeChip:
-	var input_pin_map = {
-		a = 0,
-		b = 1
-	}
-
-	var output_pin_map = {
-		out = 0
-	}
-
-	func evaluate(input: Array) -> Array:
-		return [!(input[0] and input[1])]
+const Chip = preload("res://chips/chip.gd")
+const AndChip = preload("res://chips/and.gd")
+const NativeChip = preload("res://chips/native/chip.gd")
+const NativeNand = preload("res://chips/native/nand.gd")
 
 class NativeAnd extends NativeChip:
 	var input_pin_map = {
@@ -394,23 +372,7 @@ func _make_bitwise_not_chip():
 	return chip
 
 func _make_and_chip():
-	var nand = NativeNand.new()
-	var chip = Chip.new()
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_output("out", 0)
-	chip.add_part("nand1", nand)
-	chip.add_part("nand2", nand)
-
-	chip.connect_output("nand2", "out", "out")
-
-	chip.connect_part("nand2", "a", "nand1", "out")
-	chip.connect_part("nand2", "b", "nand1", "out")
-
-	chip.connect_input("nand1", "a", "a")
-	chip.connect_input("nand1", "b", "b")
-
-	return chip
+	return AndChip.new()
 
 func _make_or_chip(not_chip, and_chip):
 	var chip = Chip.new()

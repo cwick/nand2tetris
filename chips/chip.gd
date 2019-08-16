@@ -1,9 +1,11 @@
+var output_pin_count: int setget ,_get_output_pin_count
+var public_interface: Dictionary setget ,_get_public_interface
+var name := "generic chip"
+
 var _parts = {}
 var _output_pins = []
 var _output_pin_map = {}
 var _input_nodes = {}
-
-var output_pin_count setget ,_get_output_pin_count
 
 func evaluate(input):
 	for node in _input_nodes.values():
@@ -54,6 +56,27 @@ func get_output_pin_number(pin_name):
 
 func _get_output_pin_count():
 	return _output_pins.size()
+
+func _get_public_interface():
+	var interface = {}
+	var output_pins = []
+	var input_pins = []
+	output_pins.resize(_output_pins.size())
+	input_pins.resize(_input_nodes.size())
+
+	for pin_name in _output_pin_map:
+		output_pins[_output_pin_map[pin_name]] = {
+			name = pin_name
+		}
+
+	for pin_name in _input_nodes:
+		input_pins[_input_nodes[pin_name].input_pin_number] = {
+			name = pin_name
+		}
+
+	interface["output_pins"] = output_pins
+	interface["input_pins"] = input_pins
+	return interface
 
 class InternalPin:
 	var _chip_node: ChipNode
