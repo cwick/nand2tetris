@@ -1,13 +1,15 @@
 extends Node
-const AndChip = preload("res://chips/and.gd")
+
+export(String, FILE, "*.gd") var chip
 
 func _ready():
+	var ChipClass = load(chip)
 	var input_container = find_node("InputContainer")
 	var output_container = find_node("OutputContainer")
 	_clear_container(input_container)
 	_clear_container(output_container)
 
-	var chip := AndChip.new()
+	var chip = ChipClass.new()
 	var interface = chip.public_interface
 
 	$ChipName.text = chip.name
