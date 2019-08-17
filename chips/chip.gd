@@ -1,5 +1,9 @@
 var public_interface: Dictionary setget ,_get_public_interface
 
+func evaluate(input: Array) -> Array:
+	# Overridden in child classes
+	return []
+
 func _get_public_interface():
 	var interface = {}
 	interface["output_pins"] = _get_public_output_pin_interface()
