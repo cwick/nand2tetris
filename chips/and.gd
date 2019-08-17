@@ -1,4 +1,4 @@
-extends "res://chips/chip.gd"
+extends "res://chips/simulated_chip.gd"
 
 const Nand = preload("res://chips/native/nand.gd")
 

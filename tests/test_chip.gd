@@ -1,5 +1,5 @@
 extends "res://addons/gut/test.gd"
-const Chip = preload("res://chips/chip.gd")
+const SimulatedChip = preload("res://chips/simulated_chip.gd")
 const AndChip = preload("res://chips/and.gd")
 const NativeChip = preload("res://chips/native/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
@@ -25,10 +25,10 @@ class TrueChip extends NativeChip:
 	func evaluate(input):
 		return [true]
 
-var chip: Chip = null
+var chip: SimulatedChip = null
 
 func before_each():
-	chip = Chip.new()
+	chip = SimulatedChip.new()
 
 func test_empty_chip():
 	var result = chip.evaluate([])
@@ -342,7 +342,7 @@ func _test_or(and_chip):
 		""")
 
 func _make_not_chip():
-	var chip = Chip.new()
+	var chip = SimulatedChip.new()
 	chip.add_input("in", 0)
 	chip.add_output("out", 0)
 
@@ -355,7 +355,7 @@ func _make_not_chip():
 
 func _make_bitwise_not_chip():
 	var not_chip = _make_not_chip()
-	var chip = Chip.new()
+	var chip = SimulatedChip.new()
 
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
@@ -375,7 +375,7 @@ func _make_and_chip():
 	return AndChip.new()
 
 func _make_or_chip(not_chip, and_chip):
-	var chip = Chip.new()
+	var chip = SimulatedChip.new()
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
 	chip.add_output("out", 0)
