@@ -3,6 +3,9 @@ extends Node
 export(String, FILE, "*.gd") var chip
 
 func _ready():
+	if chip == "":
+		return
+
 	var ChipClass = load(chip)
 	var input_container = find_node("InputContainer")
 	var output_container = find_node("OutputContainer")

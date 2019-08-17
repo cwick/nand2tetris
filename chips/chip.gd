@@ -20,7 +20,6 @@ func _get_public_input_pin_interface():
 	return input_pins
 
 func _get_public_output_pin_interface():
-	var interface = {}
 	var output_pins = []
 	var output_pin_map = self.output_pin_map
 
