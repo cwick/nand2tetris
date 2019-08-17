@@ -1,4 +1,3 @@
-
 var public_interface: Dictionary setget ,_get_public_interface
 
 func _get_public_interface():

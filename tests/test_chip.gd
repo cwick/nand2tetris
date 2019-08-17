@@ -1,6 +1,9 @@
 extends "res://addons/gut/test.gd"
 const SimulatedChip = preload("res://chips/simulated_chip.gd")
 const AndChip = preload("res://chips/and.gd")
+const OrChip = preload("res://chips/or.gd")
+const XorChip = preload("res://chips/xor.gd")
+const NotChip = preload("res://chips/not.gd")
 const NativeChip = preload("res://chips/native/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
 
@@ -50,10 +53,10 @@ func test_chip_inputs_are_false_when_not_connected():
 
 	assert_truth_table(chip, 
 		"""
-		1 1 0
-		1 0 0
-		0 1 0
-		0 0 0
+		1 1 = 0
+		1 0 = 0
+		0 1 = 0
+		0 0 = 0
 		""")
 
 func test_chip_outputs_are_false_when_not_connected():
@@ -67,10 +70,10 @@ func test_chip_outputs_are_false_when_not_connected():
 
 	assert_truth_table(chip, 
 		"""
-		1 1 0
-		1 0 0
-		0 1 0
-		0 0 0
+		1 1 = 0
+		1 0 = 0
+		0 1 = 0
+		0 0 = 0
 		""")
 
 func test_chip_inputs_are_false_when_not_passed():
@@ -92,17 +95,17 @@ func test_nand():
 
 	assert_truth_table(chip, 
 		"""
-		1 1 0
-		1 0 1
-		0 1 1
-		0 0 1
+		1 1 = 0
+		1 0 = 1
+		0 1 = 1
+		0 0 = 1
 		""")
 
 func test_not():
 	assert_truth_table(_make_not_chip(), 
 		"""
-		1 0
-		0 1
+		1 = 0
+		0 = 1
 		""")
 
 func test_not_not():
@@ -118,18 +121,18 @@ func test_not_not():
 
 	assert_truth_table(chip,
 		"""
-		1 1
-		0 0
+		1 = 1
+		0 = 0
 		""")
 
 func test_bitwise_not_with_two_bits():
 	assert_truth_table(_make_bitwise_not_chip(),
 		# a b not_a not_b
 		"""
-		0 0 1 1
-		0 1 1 0
-		1 0 0 1
-		1 1 0 0
+		0 0 = 1 1
+		0 1 = 1 0
+		1 0 = 0 1
+		1 1 = 0 0
 		""")
 
 func test_chip_with_two_outputs():
@@ -149,67 +152,45 @@ func test_chip_with_two_outputs():
 	assert_truth_table(chip,
 		# a b not_a not_b
 		"""
-		0 0 1 1
-		0 1 1 0
-		1 0 0 1
-		1 1 0 0
+		0 0 = 1 1
+		0 1 = 1 0
+		1 0 = 0 1
+		1 1 = 0 0
 		""")
 
 func test_and():
 	assert_truth_table(_make_and_chip(),
 		"""
-		1 1 1
-		1 0 0
-		0 1 0
-		0 0 0
+		1 1 = 1
+		1 0 = 0
+		0 1 = 0
+		0 0 = 0
 		""")
 
-func test_or_with_constructed_chips():
-	_test_or(_make_and_chip())
+func test_or():
+	var not_chip = _make_not_chip()
+	assert_truth_table(_make_or_chip(), 
+		"""
+		1 1 = 1
+		1 0 = 1
+		0 1 = 1
+		0 0 = 0
+		""")
 
-func test_or_with_mix_of_native_and_constructed_chips():
-	_test_or(NativeAnd.new())
 
 func test_xor():
-	var not_chip = _make_not_chip()
-	var and_chip = _make_and_chip()
-	var or_chip = _make_or_chip(not_chip, and_chip)
-
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_output("out", 0)
-
-	chip.add_part("and", and_chip)
-	chip.add_part("or1", or_chip)
-	chip.add_part("or2", or_chip)
-	chip.add_part("not1", not_chip)
-	chip.add_part("not2", not_chip)
-
-	chip.connect_output("and", "out", "out")
-
-	chip.connect_part("and", "a", "or1", "out")
-	chip.connect_part("and", "b", "or2", "out")
-
-	chip.connect_part("or2", "a", "not1", "out")
-	chip.connect_part("or2", "b", "not2", "out")
-
-	chip.connect_input("not1", "in", "a")
-	chip.connect_input("not2", "in", "b")
-	chip.connect_input("or1", "a", "a")
-	chip.connect_input("or1", "b", "b")
-
-	assert_truth_table(chip, 
+	assert_truth_table(XorChip.new(), 
 		"""
-		1 1 0
-		1 0 1
-		0 1 1
-		0 0 0
+		1 1 = 0
+		1 0 = 1
+		0 1 = 1
+		0 0 = 0
 		""")
 
 func test_mux():
 	var not_chip = _make_not_chip()
 	var and_chip = _make_and_chip()
-	var or_chip = _make_or_chip(not_chip, and_chip)
+	var or_chip = _make_or_chip()
 
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
@@ -235,15 +216,15 @@ func test_mux():
 	assert_truth_table(chip,
 		#  a b selector
 		"""
-		0 0 0 0
-		0 1 0 0
-		1 0 0 1
-		1 1 0 1
+		0 0 0 = 0
+		0 1 0 = 0
+		1 0 0 = 1
+		1 1 0 = 1
 
-		0 0 1 0
-		0 1 1 1
-		1 0 1 0
-		1 1 1 1
+		0 0 1 = 0
+		0 1 1 = 1
+		1 0 1 = 0
+		1 1 1 = 1
 		""")
 
 func test_and_with_three_inputs():
@@ -264,15 +245,15 @@ func test_and_with_three_inputs():
 
 	assert_truth_table(chip,
 		"""
-		0 0 0 0
-		0 1 0 0
-		1 0 0 0
-		1 1 0 0
+		0 0 0 = 0
+		0 1 0 = 0
+		1 0 0 = 0
+		1 1 0 = 0
 
-		0 0 1 0
-		0 1 1 0
-		1 0 1 0
-		1 1 1 1
+		0 0 1 = 0
+		0 1 1 = 0
+		1 0 1 = 0
+		1 1 1 = 1
 		""")
 
 func test_connect_chip_with_multiple_outputs():
@@ -294,10 +275,10 @@ func test_connect_chip_with_multiple_outputs():
 	assert_truth_table(chip,
 		# Selects the second bit
 		"""
-		1 1 1
-		0 1 1
-		1 0 0
-		0 0 0
+		1 1 = 1
+		0 1 = 1
+		1 0 = 0
+		0 0 = 0
 		""")
 
 func test_dmux():
@@ -324,34 +305,14 @@ func test_dmux():
 	assert_truth_table(chip,
 		#  in selector => a b
 		"""
-		1 1 0 1 
-		1 0 1 0
-		0 1 0 0
-		0 0 0 0
-		""")
-
-
-func _test_or(and_chip):
-	var not_chip = _make_not_chip()
-	assert_truth_table(_make_or_chip(not_chip, and_chip), 
-		"""
-		1 1 1
-		1 0 1
-		0 1 1
-		0 0 0
+		1 1 = 0 1 
+		1 0 = 1 0
+		0 1 = 0 0
+		0 0 = 0 0
 		""")
 
 func _make_not_chip():
-	var chip = SimulatedChip.new()
-	chip.add_input("in", 0)
-	chip.add_output("out", 0)
-
-	chip.add_part("nand", NativeNand.new())
-	chip.connect_output("nand", "out", "out")
-
-	chip.connect_input("nand", "a", "in")
-	chip.connect_input("nand", "b", "in")
-	return chip
+	return NotChip.new()
 
 func _make_bitwise_not_chip():
 	var not_chip = _make_not_chip()
@@ -374,54 +335,37 @@ func _make_bitwise_not_chip():
 func _make_and_chip():
 	return AndChip.new()
 
-func _make_or_chip(not_chip, and_chip):
-	var chip = SimulatedChip.new()
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_output("out", 0)
-
-	chip.add_part("not1", not_chip)
-	chip.add_part("not2", not_chip)
-	chip.add_part("not3", not_chip)
-	chip.add_part("and", and_chip)
-
-	chip.connect_output("not3", "out", "out")
-
-	chip.connect_part("not3", "in", "and", "out")
-	chip.connect_part("and", "a", "not1", "out")
-	chip.connect_part("and", "b", "not2", "out")
-
-	chip.connect_input("not1", "in", "a")
-	chip.connect_input("not2", "in", "b")
-
-	return chip
+func _make_or_chip():
+	return OrChip.new()
 
 func assert_truth_table(chip, truth_table):
 	var no_allow_empty = false
 	for line in _clean_lines(truth_table.split("\n", no_allow_empty)):
 		var entries = _clean_entries(line.split(" ", no_allow_empty))
 		var input = []
-
-		for i in range(entries.size() - chip.output_pin_count):
-			input.append(entries[i])
-
 		var expected_output = []
-		for i in range(chip.output_pin_count, 0, -1):
-			expected_output.append(entries[-i])
+		var a = input
+
+		for i in range(entries.size()):
+			var entry = entries[i]
+			if entry == "=":
+				a = expected_output
+			else:
+				a.append(entry == "1")
 
 		assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
 
 func _clean_lines(lines):
 	var cleaned_lines = []
 	for line in lines:
-		var clean_line = line.strip_edges(true, true)
-		if clean_line != "":
-			cleaned_lines.append(clean_line)
+		var cleaned_line = line.strip_edges(true, true)
+		if cleaned_line != "":
+			cleaned_lines.append(cleaned_line)
 	return cleaned_lines
 
 func _clean_entries(entries):
 	var cleaned_entries = []
 	for entry in entries:
-		cleaned_entries.append(entry.strip_edges(true, true) == "1")
+		cleaned_entries.append(entry.strip_edges(true, true))
 	return cleaned_entries
 
