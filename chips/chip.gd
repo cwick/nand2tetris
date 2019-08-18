@@ -1,37 +1,25 @@
-var public_interface: Dictionary setget ,_get_public_interface
-
 func evaluate(input: Array) -> Array:
 	# Overridden in child classes
 	return []
 
-func _get_public_interface():
-	var interface = {}
-	interface["output_pins"] = _get_public_output_pin_interface()
-	interface["input_pins"] = _get_public_input_pin_interface()
-	return interface
-    
-func _get_public_input_pin_interface():
-	var input_pins = []
-	var input_pin_map = self.input_pin_map
+func get_output_pins() -> Array:
+	# Overridden in child classes
+	return []
 
-	input_pins.resize(input_pin_map.size())
+func get_input_pins() -> Array:
+	# Overridden in child classes
+	return []
+	
+func get_input_pin_number(pin_name) -> int:
+	return _find_pin_index(pin_name, get_input_pins())
 
-	for pin_name in input_pin_map:
-		input_pins[input_pin_map[pin_name]["index"]] = {
-			name = pin_name
-		}
+func get_output_pin_number(pin_name: String) -> int:
+	return _find_pin_index(pin_name, get_output_pins())
 
-	return input_pins
+func _find_pin_index(pin_name: String, pins: Array) -> int:
+	for i in range(pins.size()):
+		var pin = pins[i]
+		if pin["name"] == pin_name:
+			return i
 
-func _get_public_output_pin_interface():
-	var output_pins = []
-	var output_pin_map = self.output_pin_map
-
-	output_pins.resize(output_pin_map.size())
-
-	for pin_name in output_pin_map:
-		output_pins[output_pin_map[pin_name]["index"]] = {
-			name = pin_name
-		}
-
-	return output_pins
+	return -1

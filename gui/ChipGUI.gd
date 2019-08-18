@@ -16,16 +16,15 @@ func _ready():
 	_clear_container(output_container)
 
 	_chip = ChipClass.new()
-	var interface = _chip.public_interface
 
 	find_node("ChipName").text = _chip.name
 	
-	for pin in interface["input_pins"]:
+	for pin in _chip.get_input_pins():
 		var checkbox = _create_pin_gui(pin)
 		checkbox.connect("toggled", self, "_on_input_changed")
 		input_container.add_child(checkbox)
 
-	for pin in interface["output_pins"]:
+	for pin in _chip.get_output_pins():
 		var checkbox = _create_pin_gui(pin)
 		checkbox.disabled = true
 		checkbox.focus_mode = Control.FOCUS_NONE

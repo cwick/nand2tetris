@@ -1,7 +1,5 @@
 extends "./chip.gd"
 
-var output_pin_map setget ,_get_output_pin_map
-var input_pin_map setget ,_get_input_pin_map
 var name := "generic chip"
 
 var _parts = {}
@@ -56,24 +54,30 @@ func get_input_pin_number(pin_name):
 func get_output_pin_number(pin_name):
 	return _output_pin_map[pin_name]
 
-func _get_output_pin_map():
-	var pin_map = {}
-	for pin in _output_pin_map:
-		pin_map[pin] = {
-			index = _output_pin_map[pin],
-			bits = 1
-		}
-	return pin_map
-	
-func _get_input_pin_map():
-	var pin_map = {}
-	for pin in _input_nodes:
-		pin_map[pin] = {
-			index = _input_nodes[pin].input_pin_number,
-			bits = 1
-		}
+func get_input_pins():
+    var pins = []
+    pins.resize(_input_nodes.size())
+    for p in _input_nodes:
+        var node = _input_nodes[p]
+        pins[node.input_pin_number] = {
+			name = p,
+			# TODO: support multi-bit
+            bits = 1
+        }
+    
+    return pins	
 
-	return pin_map
+func get_output_pins():
+	var pins = []
+	pins.resize(_output_pin_map.size())
+	for p in _output_pin_map:
+		pins[_output_pin_map[p]] = {
+			name = p,
+			# TODO: support multi-bit
+			bits = 1
+		}
+	
+	return pins	
 
 class InternalPin:
 	var _chip_node: ChipNode

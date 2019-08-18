@@ -1,13 +1,15 @@
-extends "./chip.gd"
+extends "../chip.gd"
 
-var input_pin_map = {
-    a = { index = 0, bits = 1 },
-    b = { index = 1, bits = 1 }
-}
+func get_input_pins():
+    return [
+        { name = "a", bits = 1},
+        { name = "b", bits = 1},
+    ]
 
-var output_pin_map = {
-    out = { index = 0, bits = 1 }
-}
+func get_output_pins():
+    return [
+        { name = "out", bits = 1 }
+    ]
 
 var name = "NAND"
 

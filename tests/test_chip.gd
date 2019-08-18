@@ -6,24 +6,26 @@ const XorChip = preload("res://chips/xor.gd")
 const MuxChip = preload("res://chips/mux.gd")
 const DmuxChip = preload("res://chips/dmux.gd")
 const NotChip = preload("res://chips/not.gd")
-const NativeChip = preload("res://chips/native/chip.gd")
+const Chip = preload("res://chips/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
 const NativeNand4 = preload("res://chips/native/nand4.gd")
 
-class NativeAnd extends NativeChip:
-	var input_pin_map = {
-		a = { index = 0, bits = 1},
-		b = { index = 1, bits = 1}
-	}
-
-	var output_pin_map = {
-		out = { index = 0, bits = 1}
-	}
-
+class NativeAnd extends Chip:
+	func get_input_pins():
+		return [
+			{ name = "a", bits = 1},
+			{ name = "b", bits = 1},
+		]
+	
+	func get_output_pins():
+		return [
+			{ name = "out", bits = 1 }
+		]
+	
 	func evaluate(input: Array) -> Array:
 		return [input[0] && input[1]]
 
-class TrueChip extends NativeChip:
+class TrueChip extends Chip:
 	var output_pin_map = {
 		out = { index = 0, bits = 1 }
 	}
