@@ -1,6 +1,5 @@
 extends "./chip.gd"
 
-var output_pin_count: int setget ,_get_output_pin_count
 var output_pin_map setget ,_get_output_pin_map
 var input_pin_map setget ,_get_input_pin_map
 var name := "generic chip"
@@ -56,9 +55,6 @@ func get_input_pin_number(pin_name):
 
 func get_output_pin_number(pin_name):
 	return _output_pin_map[pin_name]
-
-func _get_output_pin_count():
-	return _output_pins.size()
 
 func _get_output_pin_map():
 	var pin_map = {}
