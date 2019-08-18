@@ -3,6 +3,8 @@ const SimulatedChip = preload("res://chips/simulated_chip.gd")
 const AndChip = preload("res://chips/and.gd")
 const OrChip = preload("res://chips/or.gd")
 const XorChip = preload("res://chips/xor.gd")
+const MuxChip = preload("res://chips/mux.gd")
+const DmuxChip = preload("res://chips/dmux.gd")
 const NotChip = preload("res://chips/not.gd")
 const NativeChip = preload("res://chips/native/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
@@ -188,32 +190,7 @@ func test_xor():
 		""")
 
 func test_mux():
-	var not_chip = _make_not_chip()
-	var and_chip = _make_and_chip()
-	var or_chip = _make_or_chip()
-
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_input("selector", 2)
-	chip.add_output("out", 0)
-
-	chip.add_part("or", or_chip)
-	chip.add_part("not", not_chip)
-	chip.add_part("and1", and_chip)
-	chip.add_part("and2", and_chip)
-
-	chip.connect_output("or", "out", "out")
-
-	chip.connect_part("or", "a", "and1", "out")
-	chip.connect_part("or", "b", "and2", "out")
-	chip.connect_part("and1", "a", "not", "out")
-
-	chip.connect_input("and1", "b", "a")
-	chip.connect_input("and2", "a", "b")
-	chip.connect_input("and2", "b", "selector")
-	chip.connect_input("not", "in", "selector")
-
-	assert_truth_table(chip,
+	assert_truth_table(MuxChip.new(),
 		#  a b selector
 		"""
 		0 0 0 = 0
@@ -282,27 +259,7 @@ func test_connect_chip_with_multiple_outputs():
 		""")
 
 func test_dmux():
-	var not_chip = _make_not_chip()
-	var and_chip = _make_and_chip()
-
-	chip.add_input("in", 0)
-	chip.add_input("selector", 1)
-	chip.add_output("a", 0)
-	chip.add_output("b", 1)
-
-	chip.add_part("and1", and_chip)
-	chip.add_part("and2", and_chip)
-	chip.add_part("not", not_chip)
-
-	chip.connect_part("and1", "a", "not", "out")
-	chip.connect_input("and1", "b", "in")
-	chip.connect_input("and2", "a", "in")
-	chip.connect_input("and2", "b", "selector")
-	chip.connect_input("not", "in", "selector")
-	chip.connect_output("and1", "out", "a")
-	chip.connect_output("and2", "out", "b")
-
-	assert_truth_table(chip,
+	assert_truth_table(DmuxChip.new(),
 		#  in selector => a b
 		"""
 		1 1 = 0 1 

@@ -30,6 +30,7 @@ func _ready():
 		var checkbox = CheckBox.new()
 		checkbox.text = pin["name"]
 		checkbox.disabled = true
+		checkbox.focus_mode = Control.FOCUS_NONE
 		output_container.add_child(checkbox)
 
 	_evaluate_chips()
