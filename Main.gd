@@ -13,7 +13,7 @@ func _add_chips_from_directory(dir_name: String):
     dir.open(dir_name)
     dir.list_dir_begin(true, true)
     var file := dir.get_next()
-    var gui_resource = load("res://ChipGUI.tscn")
+    var gui_resource = load("res://gui/ChipGUI.tscn")
 
     while file != '':
         if file != "chip.gd" and file != "simulated_chip.gd" and !dir.current_is_dir():

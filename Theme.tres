@@ -1,6 +1,8 @@
 [gd_resource type="Theme" format=2]
 
 [resource]
+GridContainer/constants/hseparation = 8
+GridContainer/constants/vseparation = 8
 MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10

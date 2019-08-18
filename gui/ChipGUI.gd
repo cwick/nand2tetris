@@ -45,8 +45,8 @@ func _on_input_changed(pressed):
 func _evaluate_chips():
 	var input = []
 	for node in find_node("InputContainer").get_children():
-		input.append(node.pressed)
+		input.append(node.pressed as int)
 
 	var result := _chip.evaluate(input)
-	for child in find_node("OutputContainer").get_children():
-		child.pressed = result[child.get_index()]
+	for output_pin in find_node("OutputContainer").get_children():
+		output_pin.pressed = result[output_pin.get_index()] as bool

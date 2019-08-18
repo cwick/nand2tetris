@@ -8,6 +8,7 @@ const DmuxChip = preload("res://chips/dmux.gd")
 const NotChip = preload("res://chips/not.gd")
 const NativeChip = preload("res://chips/native/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
+const NativeNand4 = preload("res://chips/native/nand4.gd")
 
 class NativeAnd extends NativeChip:
 	var input_pin_map = {
@@ -268,27 +269,12 @@ func test_dmux():
 		0 0 = 0 0
 		""")
 
-class Nand4 extends NativeChip:
-	var input_pin_map = {
-		a = 0,
-		b = 1
-	}
-
-	var output_pin_map = {
-		out = 0
-	}
-
-	var name = "NAND8"
-
-	func evaluate(input: Array) -> Array:
-		return [0xF & ~(input[0] & input[1])]
-
 func test_multibit_nand():
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
 	chip.add_output("out", 0)
 
-	chip.add_part("nand", Nand4.new())
+	chip.add_part("nand", NativeNand4.new())
 	chip.connect_output("nand", "out", "out")
 	chip.connect_input("nand", "a", "a")
 	chip.connect_input("nand", "b", "b")
