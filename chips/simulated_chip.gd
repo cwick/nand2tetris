@@ -17,7 +17,7 @@ func evaluate(input):
 	var output = []
 
 	for pin in _output_pins:
-		output.append(pin.evaluate() if pin else false)
+		output.append(pin.evaluate() if pin else 0)
 
 	return output
 
@@ -78,9 +78,9 @@ class InternalPin:
 		_chip_node = chip_node
 		_output_pin_selector = chip_node.get_output_pin_number(output_pin_name)
 
-	func evaluate() -> bool:
+	func evaluate() -> int:
 		var result := _chip_node.evaluate()
-		return result[_output_pin_selector] as bool
+		return result[_output_pin_selector]
 
 class ChipNode:
 	var _child_nodes = []
@@ -118,7 +118,7 @@ class InputNode:
 	func bind_input(input: Array):
 		_input = input
 
-	func evaluate() -> bool:
+	func evaluate() -> int:
 		if input_pin_number >= _input.size():
-			return false
+			return 0
 		return _input[input_pin_number]

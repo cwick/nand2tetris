@@ -12,4 +12,5 @@ var output_pin_map = {
 var name = "NAND"
 
 func evaluate(input: Array) -> Array:
-    return [!(input[0] and input[1])]
+    var result = !(input[0] and input[1])
+    return [result as int]

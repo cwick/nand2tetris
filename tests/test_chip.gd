@@ -28,7 +28,7 @@ class TrueChip extends NativeChip:
 	}
 
 	func evaluate(input):
-		return [true]
+		return [1]
 
 var chip: SimulatedChip = null
 
@@ -268,6 +268,36 @@ func test_dmux():
 		0 0 = 0 0
 		""")
 
+class Nand4 extends NativeChip:
+	var input_pin_map = {
+		a = 0,
+		b = 1
+	}
+
+	var output_pin_map = {
+		out = 0
+	}
+
+	var name = "NAND8"
+
+	func evaluate(input: Array) -> Array:
+		return [0xF & ~(input[0] & input[1])]
+
+func test_multibit_nand():
+	chip.add_input("a", 0)
+	chip.add_input("b", 1)
+	chip.add_output("out", 0)
+
+	chip.add_part("nand", Nand4.new())
+	chip.connect_output("nand", "out", "out")
+	chip.connect_input("nand", "a", "a")
+	chip.connect_input("nand", "b", "b")
+
+	assert_truth_table(chip,
+		"""
+		1010 1100 = 0111
+		""")
+
 func _make_not_chip():
 	return NotChip.new()
 
@@ -308,7 +338,7 @@ func assert_truth_table(chip, truth_table):
 			if entry == "=":
 				a = expected_output
 			else:
-				a.append(entry == "1")
+				a.append(_parse_binary_integer(entry))
 
 		assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table")
 
@@ -325,4 +355,12 @@ func _clean_entries(entries):
 	for entry in entries:
 		cleaned_entries.append(entry.strip_edges(true, true))
 	return cleaned_entries
+
+func _parse_binary_integer(binary_string: String) -> int:
+	var result := 0
+	for i in range(binary_string.length()):
+		var bit := (binary_string[binary_string.length() - i - 1] == "1") as int
+		result |= (bit << i)
+
+	return result
 
