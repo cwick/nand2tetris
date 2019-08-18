@@ -12,12 +12,12 @@ const NativeNand4 = preload("res://chips/native/nand4.gd")
 
 class NativeAnd extends NativeChip:
 	var input_pin_map = {
-		a = 0,
-		b = 1
+		a = { index = 0, bits = 1},
+		b = { index = 1, bits = 1}
 	}
 
 	var output_pin_map = {
-		out = 0
+		out = { index = 0, bits = 1}
 	}
 
 	func evaluate(input: Array) -> Array:
@@ -25,7 +25,7 @@ class NativeAnd extends NativeChip:
 
 class TrueChip extends NativeChip:
 	var output_pin_map = {
-		out = 0
+		out = { index = 0, bits = 1 }
 	}
 
 	func evaluate(input):

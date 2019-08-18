@@ -1,12 +1,12 @@
 extends "./chip.gd"
 
 var input_pin_map = {
-    a = 0,
-    b = 1
+    a = { index = 0, bits = 4 },
+    b = { index = 1, bits = 4 }
 }
 
 var output_pin_map = {
-    out = 0
+    out = { index = 0, bits = 4 }
 }
 
 var name = "NAND4"

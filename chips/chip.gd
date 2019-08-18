@@ -16,8 +16,8 @@ func _get_public_input_pin_interface():
 
 	input_pins.resize(input_pin_map.size())
 
-	for pin_name in self.input_pin_map:
-		input_pins[self.input_pin_map[pin_name]] = {
+	for pin_name in input_pin_map:
+		input_pins[input_pin_map[pin_name]["index"]] = {
 			name = pin_name
 		}
 
@@ -30,7 +30,7 @@ func _get_public_output_pin_interface():
 	output_pins.resize(output_pin_map.size())
 
 	for pin_name in output_pin_map:
-		output_pins[output_pin_map[pin_name]] = {
+		output_pins[output_pin_map[pin_name]["index"]] = {
 			name = pin_name
 		}
 

@@ -21,14 +21,12 @@ func _ready():
 	find_node("ChipName").text = _chip.name
 	
 	for pin in interface["input_pins"]:
-		var checkbox = CheckBox.new()
-		checkbox.text = pin["name"]
+		var checkbox = _create_pin_gui(pin)
 		checkbox.connect("toggled", self, "_on_input_changed")
 		input_container.add_child(checkbox)
 
 	for pin in interface["output_pins"]:
-		var checkbox = CheckBox.new()
-		checkbox.text = pin["name"]
+		var checkbox = _create_pin_gui(pin)
 		checkbox.disabled = true
 		checkbox.focus_mode = Control.FOCUS_NONE
 		output_container.add_child(checkbox)
@@ -44,9 +42,15 @@ func _on_input_changed(pressed):
 	
 func _evaluate_chips():
 	var input = []
-	for node in find_node("InputContainer").get_children():
-		input.append(node.pressed as int)
+	for pin in find_node("InputContainer").get_children():
+		input.append(pin.get_value())
 
 	var result := _chip.evaluate(input)
 	for output_pin in find_node("OutputContainer").get_children():
-		output_pin.pressed = result[output_pin.get_index()] as bool
+		output_pin.set_value(result[output_pin.get_index()])
+
+func _create_pin_gui(pin):
+	var control := CheckBox.new()
+	control.text = pin["name"]
+	control.set_script(load("res://gui/boolean_pin.gd"))
+	return control

@@ -61,12 +61,21 @@ func _get_output_pin_count():
 	return _output_pins.size()
 
 func _get_output_pin_map():
-	return _output_pin_map
+	var pin_map = {}
+	for pin in _output_pin_map:
+		pin_map[pin] = {
+			index = _output_pin_map[pin],
+			bits = 1
+		}
+	return pin_map
 	
 func _get_input_pin_map():
 	var pin_map = {}
 	for pin in _input_nodes:
-		pin_map[pin] = _input_nodes[pin].input_pin_number
+		pin_map[pin] = {
+			index = _input_nodes[pin].input_pin_number,
+			bits = 1
+		}
 
 	return pin_map
 
@@ -96,14 +105,11 @@ class ChipNode:
 		return _chip.evaluate(input_values)
 
 	func add_child_at(child, pin_name: String):
-		var pin_number = get_input_pin_number(pin_name)
+		var pin_number = _chip.get_input_pin_number(pin_name)
 		if pin_number >= _child_nodes.size() - 1:
 			_child_nodes.resize(pin_number + 1)
 
 		_child_nodes[pin_number] = child
-
-	func get_input_pin_number(pin_name) -> int:
-		return _chip.get_input_pin_number(pin_name)
 
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
