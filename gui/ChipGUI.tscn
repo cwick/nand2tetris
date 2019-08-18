@@ -2,69 +2,76 @@
 
 [ext_resource path="res://gui/ChipGUI.gd" type="Script" id=1]
 
-[node name="ChipGUI" type="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer"]
 margin_right = 167.0
-margin_bottom = 84.0
+margin_bottom = 14.0
 script = ExtResource( 1 )
 
-[node name="ChipName" type="Label" parent="."]
-margin_right = 167.0
+[node name="ChipGUI" type="VBoxContainer" parent="."]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 160.0
+margin_bottom = 77.0
+
+[node name="ChipName" type="Label" parent="ChipGUI"]
+margin_right = 153.0
 margin_bottom = 14.0
 text = "Chip Name"
 
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="GridContainer" type="GridContainer" parent="ChipGUI"]
+editor/display_folded = true
 margin_top = 18.0
-margin_right = 167.0
+margin_right = 153.0
 margin_bottom = 70.0
 columns = 2
 
-[node name="Label" type="Label" parent="GridContainer"]
+[node name="Label" type="Label" parent="ChipGUI/GridContainer"]
 margin_top = 5.0
 margin_right = 45.0
 margin_bottom = 19.0
 text = "Input"
 
-[node name="InputContainer" type="HBoxContainer" parent="GridContainer"]
+[node name="InputContainer" type="HBoxContainer" parent="ChipGUI/GridContainer"]
 margin_left = 49.0
 margin_right = 129.0
 margin_bottom = 24.0
 
-[node name="CheckBox" type="CheckBox" parent="GridContainer/InputContainer"]
+[node name="CheckBox" type="CheckBox" parent="ChipGUI/GridContainer/InputContainer"]
 margin_right = 24.0
 margin_bottom = 24.0
 
-[node name="CheckBox2" type="CheckBox" parent="GridContainer/InputContainer"]
+[node name="CheckBox2" type="CheckBox" parent="ChipGUI/GridContainer/InputContainer"]
 margin_left = 28.0
 margin_right = 52.0
 margin_bottom = 24.0
 
-[node name="CheckBox3" type="CheckBox" parent="GridContainer/InputContainer"]
+[node name="CheckBox3" type="CheckBox" parent="ChipGUI/GridContainer/InputContainer"]
 margin_left = 56.0
 margin_right = 80.0
 margin_bottom = 24.0
 
-[node name="Label2" type="Label" parent="GridContainer"]
+[node name="Label2" type="Label" parent="ChipGUI/GridContainer"]
 margin_top = 33.0
 margin_right = 45.0
 margin_bottom = 47.0
 text = "Output"
 
-[node name="OutputContainer" type="HBoxContainer" parent="GridContainer"]
+[node name="OutputContainer" type="HBoxContainer" parent="ChipGUI/GridContainer"]
 margin_left = 49.0
 margin_top = 28.0
 margin_right = 129.0
 margin_bottom = 52.0
 
-[node name="CheckBox" type="CheckBox" parent="GridContainer/OutputContainer"]
+[node name="CheckBox" type="CheckBox" parent="ChipGUI/GridContainer/OutputContainer"]
 margin_right = 24.0
 margin_bottom = 24.0
 
-[node name="CheckBox2" type="CheckBox" parent="GridContainer/OutputContainer"]
+[node name="CheckBox2" type="CheckBox" parent="ChipGUI/GridContainer/OutputContainer"]
 margin_left = 28.0
 margin_right = 52.0
 margin_bottom = 24.0
 
-[node name="CheckBox3" type="CheckBox" parent="GridContainer/OutputContainer"]
+[node name="CheckBox3" type="CheckBox" parent="ChipGUI/GridContainer/OutputContainer"]
 margin_left = 56.0
 margin_right = 80.0
 margin_bottom = 24.0

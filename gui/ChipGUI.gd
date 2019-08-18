@@ -18,7 +18,7 @@ func _ready():
 	_chip = ChipClass.new()
 	var interface = _chip.public_interface
 
-	$ChipName.text = _chip.name
+	find_node("ChipName").text = _chip.name
 	
 	for pin in interface["input_pins"]:
 		var checkbox = CheckBox.new()

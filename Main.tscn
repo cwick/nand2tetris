@@ -14,11 +14,11 @@ margin_bottom = 40.0
 [node name="GridContainer" type="GridContainer" parent="MarginContainer"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 143.0
-margin_bottom = 84.0
+margin_right = 157.0
+margin_bottom = 98.0
 columns = 6
 script = ExtResource( 2 )
 
 [node name="ChipGUI" parent="MarginContainer/GridContainer" instance=ExtResource( 3 )]
-margin_right = 133.0
-margin_bottom = 74.0
+margin_right = 147.0
+margin_bottom = 88.0
