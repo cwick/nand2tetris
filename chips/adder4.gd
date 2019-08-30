@@ -4,20 +4,21 @@ const FullAdder = preload("./full_adder.gd")
 func _init():
 	self.name = "Adder4"
 	var full_adder = FullAdder.new()
+	var bits = 4
 	
-	add_input("a", 0, 2)
-	add_input("b", 1, 2)
-	add_output("sum", 0, 2)
+	add_input("a", 0, bits)
+	add_input("b", 1, bits)
+	add_output("sum", 0, bits)
 	
-	add_part("add0", full_adder)
-	add_part("add1", full_adder)
+	for i in range(bits):
+		add_part("add%d" % i, full_adder)
 	
-	connect_input("add0", "a", "a", { from = 0, to = 0 })
-	connect_input("add0", "b", "b", { from = 0, to = 0 }) 
-	connect_input("add1", "a", "a", { from = 1, to = 0 })
-	connect_input("add1", "b", "b", { from = 1, to = 0 })
+	for i in range(bits):
+		connect_input("add%d" % i, "a", "a", { from = i, to = 0 })
+		connect_input("add%d" % i, "b", "b", { from = i, to = 0 })
+
+	for i in range(1, bits):
+		connect_part("add%d" % i, "c", "add%d" % (i - 1), "carry")
 	
-	connect_part("add1", "c", "add0", "carry")
-	
-	connect_output("add0", "sum", "sum", { from = 0, to = 0 })
-	connect_output("add1", "sum", "sum", { from = 0, to = 1 })
+	for i in range(bits):
+		connect_output("add%d" % i, "sum", "sum", { from = 0, to = i })
