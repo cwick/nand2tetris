@@ -272,14 +272,16 @@ func test_dmux():
 		""")
 
 func test_multibit_nand():
-	chip.add_input("a", 0)
-	chip.add_input("b", 1)
-	chip.add_output("out", 0)
+	chip.add_input("a", 0, 4)
+	chip.add_input("b", 1, 4)
+	chip.add_output("out", 0, 4)
 
 	chip.add_part("nand", NativeNand4.new())
 	chip.connect_output("nand", "out", "out")
-	chip.connect_input("nand", "a", "a")
-	chip.connect_input("nand", "b", "b")
+	for i in range(4):
+		chip.connect_input("nand", "a", "a", { from = i, to = i })
+	for i in range(4):
+		chip.connect_input("nand", "b", "b", { from = i, to = i })
 
 	assert_truth_table(chip,
 		"""

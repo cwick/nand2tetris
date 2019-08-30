@@ -21,13 +21,13 @@ func _init(pin):
 	
 	for i in range(container.columns):
 		var bit_label := Label.new()
-		bit_label.text = String(i)
+		bit_label.text = String(container.columns - i - 1)
 		bit_label.align = HALIGN_CENTER
 		container.add_child(bit_label)
 		
 	for i in range(container.columns):
 		var checkbox := CheckBox.new()
-		checkbox.name = "Pin%d" % i
+		checkbox.name = "Pin%d" % (container.columns - i - 1)
 		checkbox.connect("toggled", self, "_on_checkbox_toggled")
 		container.add_child(checkbox)
 		

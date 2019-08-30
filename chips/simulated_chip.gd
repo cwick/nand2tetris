@@ -6,6 +6,7 @@ var _parts = {}
 var _output_pins = []
 var _output_pin_map = {}
 var _input_nodes = {}
+var _input_pin_map = {}
 
 func evaluate(input):
 	for node in _input_nodes.values():
@@ -24,45 +25,46 @@ func connect_part(part_name: String, part_input_pin: String,
 	var part = _parts[part_name]
 	var connection = InternalPin.new(other_part_node, other_part_output_pin)
 
-	part.add_child_at(connection, part_input_pin)
+	part.add_child_at(connection, part_input_pin, 0)
 
-func connect_input(part_name: String, part_input_pin: String, input_pin: String):
+func connect_input(part_name: String, part_input_pin: String, input_pin: String, bits = { from = 0, to = 0 }):
 	var part = _parts[part_name]
-	var input_node = _input_nodes[input_pin]
+	var input_node = _input_nodes[input_pin + String(bits["from"])]
 
-	part.add_child_at(input_node, part_input_pin)
+	part.add_child_at(input_node, part_input_pin, bits["to"])
 
 func connect_output(part_name: String, part_output_pin: String, output_pin: String):
 	var part = _parts[part_name]
-	_output_pins[_output_pin_map[output_pin]] = InternalPin.new(part, part_output_pin)
+	_output_pins[_output_pin_map[output_pin]["pin_number"]] = InternalPin.new(part, part_output_pin)
 	
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
 
-func add_input(pin_name, pin_number):
-	_input_nodes[pin_name] = InputNode.new(pin_number)
+func add_input(pin_name, pin_number, bits=1):
+	_input_pin_map[pin_name] = { pin_number = pin_number, bits = bits }
+	for i in range(bits):
+		_input_nodes[pin_name + String(i)] = InputNode.new(pin_number, i)
 
-func add_output(pin_name, pin_number):
+func add_output(pin_name, pin_number, bits=1):
 	if pin_number >= _output_pins.size():
 		_output_pins.resize(pin_number + 1)
 
-	_output_pin_map[pin_name] = pin_number
+	_output_pin_map[pin_name] = { pin_number = pin_number, bits = bits }
 
 func get_input_pin_number(pin_name):
-	return _input_nodes[pin_name].input_pin_number
+	return _input_pin_map[pin_name]["pin_number"]
 
 func get_output_pin_number(pin_name):
-	return _output_pin_map[pin_name]
+	return _output_pin_map[pin_name]["pin_number"]
 
 func get_input_pins():
     var pins = []
-    pins.resize(_input_nodes.size())
-    for p in _input_nodes:
-        var node = _input_nodes[p]
-        pins[node.input_pin_number] = {
+    pins.resize(_input_pin_map.size())
+    for p in _input_pin_map:
+        var pin = _input_pin_map[p]
+        pins[pin["pin_number"]] = {
 			name = p,
-			# TODO: support multi-bit
-            bits = 1
+            bits = pin["bits"]
         }
     
     return pins	
@@ -71,10 +73,10 @@ func get_output_pins():
 	var pins = []
 	pins.resize(_output_pin_map.size())
 	for p in _output_pin_map:
-		pins[_output_pin_map[p]] = {
+		var pin = _output_pin_map[p]
+		pins[pin["pin_number"]] = {
 			name = p,
-			# TODO: support multi-bit
-			bits = 1
+			bits = pin["bits"]
 		}
 	
 	return pins	
@@ -91,6 +93,23 @@ class InternalPin:
 		var result := _chip_node.evaluate()
 		return result[_output_pin_selector]
 
+class MultiBitPin:
+	var bits := []
+	
+	func _init(bit_count):
+		self.bits.resize(bit_count)
+		
+	func add_child_at(child, i):
+		bits[i] = child
+		
+	func evaluate() -> int:
+		var result := 0
+		for i in range(bits.size()):
+			var bit = bits[i]
+			if bit:
+				result |= (bit.evaluate() << i)
+		return result
+		
 class ChipNode:
 	var _child_nodes = []
 	var _chip
@@ -104,12 +123,16 @@ class ChipNode:
 			input_values.append(child.evaluate())
 		return _chip.evaluate(input_values)
 
-	func add_child_at(child, pin_name: String):
+	func add_child_at(child, pin_name: String, bit_number):
 		var pin_number = _chip.get_input_pin_number(pin_name)
+		var bit_count = _chip.get_input_pins()[pin_number]["bits"]
+		
 		if pin_number >= _child_nodes.size() - 1:
 			_child_nodes.resize(pin_number + 1)
-
-		_child_nodes[pin_number] = child
+			
+		if not _child_nodes[pin_number]:
+			_child_nodes[pin_number] = MultiBitPin.new(bit_count)
+		_child_nodes[pin_number].add_child_at(child, bit_number)
 
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
@@ -117,9 +140,11 @@ class ChipNode:
 class InputNode:
 	var _input: Array
 	var input_pin_number
+	var input_bit_number
 
-	func _init(pin_number):
-		input_pin_number = pin_number
+	func _init(pin_number, bit_number):
+		self.input_pin_number = pin_number
+		self.input_bit_number = bit_number
 
 	func bind_input(input: Array):
 		_input = input
@@ -127,4 +152,4 @@ class InputNode:
 	func evaluate() -> int:
 		if input_pin_number >= _input.size():
 			return 0
-		return _input[input_pin_number]
+		return 1 if _input[input_pin_number] & (1 << input_bit_number) else 0
