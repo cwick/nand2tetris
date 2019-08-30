@@ -14,10 +14,10 @@ func _init():
 	
 	connect_input("add0", "a", "a", { from = 0, to = 0 })
 	connect_input("add0", "b", "b", { from = 0, to = 0 }) 
-	#connect_input("add1", "a", "a", 1)
-	#connect_input("add1", "b", "b", 1)
+	connect_input("add1", "a", "a", { from = 1, to = 0 })
+	connect_input("add1", "b", "b", { from = 1, to = 0 })
 	
-	#connect_part("add1", "c", "add0", "carry")
+	connect_part("add1", "c", "add0", "carry")
 	
-	#connect_output("add0", "sum", "sum", 0)
-	#connect_output("add1", "sum", "sum", 1)
+	connect_output("add0", "sum", "sum", { from = 0, to = 0 })
+	connect_output("add1", "sum", "sum", { from = 0, to = 1 })

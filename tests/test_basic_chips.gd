@@ -277,7 +277,9 @@ func test_multibit_nand():
 	chip.add_output("out", 0, 4)
 
 	chip.add_part("nand", NativeNand4.new())
-	chip.connect_output("nand", "out", "out")
+	for i in range(4):
+		chip.connect_output("nand", "out", "out", { from = i, to = i })
+	
 	for i in range(4):
 		chip.connect_input("nand", "a", "a", { from = i, to = i })
 	for i in range(4):
