@@ -19,6 +19,10 @@ func evaluate(input):
 
 	return output
 
+func invalidate():
+	for p in _parts:
+		_parts[p].invalidate()
+
 func connect_part(part_name: String, part_input_pin: String,
 				  other_part: String, other_part_output_pin: String):
 	var other_part_node = _parts[other_part]
@@ -121,16 +125,23 @@ class MultiBitPin:
 class ChipNode:
 	var _child_nodes = []
 	var _chip
+	var _cached_value
 
 	func _init(chip):
 		_chip = chip
 		
 	func evaluate() -> Array:
-		var input_values = []
-		for child in _child_nodes:
-			input_values.append(child.evaluate())
-		return _chip.evaluate(input_values)
+		if not _cached_value:
+			var input_values = []
+			for child in _child_nodes:
+				input_values.append(child.evaluate())
+			_chip.invalidate()
+			_cached_value = _chip.evaluate(input_values)
+		return _cached_value
 
+	func invalidate():
+		_cached_value = null
+		
 	func add_child_at(child, pin_name: String, bit_number):
 		var pin_number = _chip.get_input_pin_number(pin_name)
 		var bit_count = _chip.get_input_pins()[pin_number]["bits"]
