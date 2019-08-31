@@ -96,6 +96,11 @@ func get_output_pins():
 	
 	return pins	
 
+func tick():
+	# TODO: fix horribly inefficient tree walk to find all the chips that need a tick
+	for p in _parts:
+		_parts[p].tick()
+		
 class InternalPin:
 	var _chip_node: ChipNode
 	var _output_pin_selector: int
@@ -131,17 +136,29 @@ class ChipNode:
 	var _child_nodes = []
 	var _chip
 	var _cached_value
+	var _is_feedback_loop = false
 
 	func _init(chip):
 		_chip = chip
 		
 	func evaluate() -> Array:
+		var should_evaluate_children = not _is_feedback_loop			
+		_is_feedback_loop = true
+		
+		if not should_evaluate_children:
+			pass
+			
 		if not _cached_value:
 			var input_values = []
-			for child in _child_nodes:
-				input_values.append(child.evaluate())
+			if should_evaluate_children:
+				for child in _child_nodes:
+					input_values.append(child.evaluate() if child else 0)
 			_chip._invalidate()
 			_cached_value = _chip._evaluate(input_values)
+		
+		if should_evaluate_children:
+			_is_feedback_loop = false
+		
 		return _cached_value
 
 	func _invalidate():
@@ -164,6 +181,9 @@ class ChipNode:
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
 
+	func tick():
+		_chip.tick()
+		
 class InputNode:
 	var _input: Array
 	var input_pin_number
