@@ -22,7 +22,7 @@ class NativeAnd extends Chip:
 			{ name = "out", bits = 1 }
 		]
 	
-	func evaluate(input: Array) -> Array:
+	func _evaluate(input: Array) -> Array:
 		return [input[0] && input[1]]
 
 class TrueChip extends Chip:
@@ -30,7 +30,7 @@ class TrueChip extends Chip:
 		out = { index = 0, bits = 1 }
 	}
 
-	func evaluate(input):
+	func _evaluate(input):
 		return [1]
 
 var chip: SimulatedChip = null

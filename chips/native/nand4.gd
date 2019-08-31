@@ -13,5 +13,5 @@ func get_output_pins():
 
 var name = "NAND4"
 
-func evaluate(input: Array) -> Array:
+func _evaluate(input: Array) -> Array:
     return [0xF & ~(input[0] & input[1])]

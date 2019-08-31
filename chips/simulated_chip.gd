@@ -8,7 +8,7 @@ var _output_pin_map = {}
 var _input_nodes = {}
 var _input_pin_map = {}
 
-func evaluate(input):
+func _evaluate(input):
 	for node in _input_nodes.values():
 		node.bind_input(input)
 
@@ -19,9 +19,9 @@ func evaluate(input):
 
 	return output
 
-func invalidate():
+func _invalidate():
 	for p in _parts:
-		_parts[p].invalidate()
+		_parts[p]._invalidate()
 
 func connect_part(part_name: String, part_input_pin: String,
 				  other_part: String, other_part_output_pin: String):
@@ -135,11 +135,11 @@ class ChipNode:
 			var input_values = []
 			for child in _child_nodes:
 				input_values.append(child.evaluate())
-			_chip.invalidate()
-			_cached_value = _chip.evaluate(input_values)
+			_chip._invalidate()
+			_cached_value = _chip._evaluate(input_values)
 		return _cached_value
 
-	func invalidate():
+	func _invalidate():
 		_cached_value = null
 		
 	func add_child_at(child, pin_name: String, bit_number):

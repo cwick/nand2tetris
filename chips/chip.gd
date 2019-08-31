@@ -1,8 +1,13 @@
 func evaluate(input: Array) -> Array:
+	_invalidate()
+	return _evaluate(input)
+
+func _evaluate(input: Array) -> Array:
 	# Overridden in child classes
 	return []
 	
-func invalidate():
+func _invalidate():
+	# Overridden in child classes
 	pass
 
 func get_output_pins() -> Array:

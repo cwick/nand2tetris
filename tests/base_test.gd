@@ -15,7 +15,6 @@ func assert_truth_table(chip, truth_table):
 			else:
 				a.append(_parse_binary_integer(entry))
 
-		chip.invalidate()
 		assert_eq(chip.evaluate(input), expected_output, "Output does not match truth table: " + line)
 
 func _clean_lines(lines):

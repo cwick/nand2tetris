@@ -13,6 +13,6 @@ func get_output_pins():
 
 var name = "NAND"
 
-func evaluate(input: Array) -> Array:
+func _evaluate(input: Array) -> Array:
     var result = !(input[0] and input[1])
     return [result as int]

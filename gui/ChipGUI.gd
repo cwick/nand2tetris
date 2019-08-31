@@ -41,7 +41,6 @@ func _evaluate_chips():
 	for pin in find_node("InputContainer").get_children():
 		input.append(pin.get_value())
 
-	_chip.invalidate()
 	var result := _chip.evaluate(input)
 	for output_pin in find_node("OutputContainer").get_children():
 		output_pin.set_value(result[output_pin.get_index()])
