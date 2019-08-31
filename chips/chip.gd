@@ -2,6 +2,10 @@ func evaluate(input: Array) -> Array:
 	_invalidate()
 	return _evaluate(input)
 
+func tick():
+	# Overridden in child classes for sequential chips
+	pass
+	
 func _evaluate(input: Array) -> Array:
 	# Overridden in child classes
 	return []

@@ -22,3 +22,6 @@ func _add_chips_from_directory(dir_name: String):
             
             add_child(gui, true)
         file = dir.get_next()
+
+func _on_Tick_pressed():
+	get_tree().call_group("chips", "tick")

@@ -22,7 +22,7 @@ func _ready():
 	
 	for pin in _chip.get_input_pins():
 		var gui = _create_pin_gui(pin)
-		gui.connect("pin_changed", self, "_evaluate_chips")
+		gui.connect("pin_changed", self, "_evaluate_chip")
 		input_container.add_child(gui)
 
 	for pin in _chip.get_output_pins():
@@ -30,13 +30,14 @@ func _ready():
 		gui.is_output = true
 		output_container.add_child(gui)
 
-	_evaluate_chips()
+	_evaluate_chip()
+	add_to_group("chips")
 
 func _clear_container(container: Container):
 	for child in container.get_children():
 		child.free()
 
-func _evaluate_chips():
+func _evaluate_chip():
 	var input = []
 	for pin in find_node("InputContainer").get_children():
 		input.append(pin.get_value())
@@ -49,3 +50,9 @@ func _create_pin_gui(pin):
 	if pin["bits"] == 1:
 		return BooleanPinGui.new(pin)
 	return MultiBitPinGui.new(pin)
+	
+func tick():
+	if _chip:
+		_chip.tick()
+		_evaluate_chip()
+	

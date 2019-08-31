@@ -24,6 +24,11 @@ config/icon="res://icon.png"
 gdscript/warnings/unused_class_variable=false
 gdscript/warnings/return_value_discarded=false
 
+[display]
+
+window/size/width=1319
+window/size/height=824
+
 [editor_plugins]
 
 enabled=PoolStringArray( "gut" )
