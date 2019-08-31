@@ -41,10 +41,15 @@ func connect_output(part_name: String, part_output_pin: String, output_pin: Stri
 	var part = _parts[part_name]
 	var output_pin_info = _output_pin_map[output_pin]
 	var output_pin_node = _output_pins[output_pin_info["pin_number"]]
-	if output_pin_node == null:
-		output_pin_node = MultiBitPin.new(output_pin_info["bits"])
-		
-	output_pin_node.add_child_at(InternalPin.new(part, part_output_pin, bits["from"]), bits["to"])
+	var internal_pin = InternalPin.new(part, part_output_pin, bits["from"])
+	
+	if output_pin_info["bits"] > 1:
+		if output_pin_node == null:
+			output_pin_node = MultiBitPin.new(output_pin_info["bits"])
+		output_pin_node.add_child_at(internal_pin, bits["to"])
+	else:
+		output_pin_node = internal_pin
+	
 	_output_pins[output_pin_info["pin_number"]] = output_pin_node
 
 func add_part(part_name, part):
@@ -148,10 +153,13 @@ class ChipNode:
 		
 		if pin_number >= _child_nodes.size() - 1:
 			_child_nodes.resize(pin_number + 1)
-			
-		if not _child_nodes[pin_number]:
-			_child_nodes[pin_number] = MultiBitPin.new(bit_count)
-		_child_nodes[pin_number].add_child_at(child, bit_number)
+		
+		if bit_count > 1:
+			if not _child_nodes[pin_number]:
+				_child_nodes[pin_number] = MultiBitPin.new(bit_count)
+			_child_nodes[pin_number].add_child_at(child, bit_number)
+		else:
+			_child_nodes[pin_number] = child
 
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
