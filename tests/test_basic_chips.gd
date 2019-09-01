@@ -181,6 +181,38 @@ func test_chip_with_two_outputs():
 		1 1 = 0 0
 		""")
 
+class DummyChip extends Chip:
+	var eval_count = 0
+	
+	func get_input_pins():
+		return [
+			{ name = "a", bits = 1},
+		]
+	
+	func get_output_pins():
+		return [
+			{ name = "out0", bits = 1 },
+			{ name = "out1", bits = 1 }
+		]
+	
+	func _evaluate(input):
+		eval_count += 1
+		return [input[0], input[0]]
+		
+func test_internal_chip_results_are_cached():
+	var dummy = DummyChip.new()
+	chip.add_input("a", 0)
+	chip.add_output("out0", 0)
+	chip.add_output("out1", 1)
+	chip.add_part("dummy", dummy)
+	
+	chip.connect_input("dummy", "a", "a")
+	chip.connect_output("dummy", "out0", "out0")
+	chip.connect_output("dummy", "out1", "out1")
+	
+	assert_eq(chip.evaluate([1]), [1, 1])
+	assert_eq(dummy.eval_count, 1)
+	
 func test_and():
 	assert_truth_table(AndChip.new(),
 		"""
