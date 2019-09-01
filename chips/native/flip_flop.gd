@@ -18,10 +18,8 @@ func _evaluate(input):
 	if input.size() > 0:
 		_current_input = input[0]
 	return [_previous_input]
-
+	
 func tick():
-	# FIXME: state will get clobbered if there are
-	# two or more flip flops in the same chip
 	_previous_input = _current_input
 
 	

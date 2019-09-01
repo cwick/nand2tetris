@@ -145,17 +145,15 @@ class ChipNode:
 		var should_evaluate_children = not _is_feedback_loop			
 		_is_feedback_loop = true
 		
-		if not should_evaluate_children:
-			pass
-			
 		if not _cached_value:
 			var input_values = []
 			if should_evaluate_children:
 				for child in _child_nodes:
 					input_values.append(child.evaluate() if child else 0)
+			
 			_chip._invalidate()
 			_cached_value = _chip._evaluate(input_values)
-		
+						
 		if should_evaluate_children:
 			_is_feedback_loop = false
 		
@@ -181,7 +179,7 @@ class ChipNode:
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
 
-	func tick():
+	func tick():				
 		_chip.tick()
 		
 class InputNode:
