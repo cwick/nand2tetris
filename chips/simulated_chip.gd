@@ -35,23 +35,26 @@ func connect_input(part_name: String, part_input_pin: String, input_pin: String,
 	var input_pin_number = get_input_pin_number(input_pin)
 	var bit_count = _input_pin_map[input_pin]["bits"]
 	
-	# TODO: pass correct bit_mapping from outside
-	var word_source = InputPin.new(input_pin_number, [0, bit_count - 1] if not bit_mapping else [bit_mapping["from"], bit_mapping["from"]])
+	if not bit_mapping:
+		bit_mapping = { from = [0, bit_count - 1], to = [0, bit_count -1] }
+		
+	var word_source = InputPin.new(input_pin_number, bit_mapping["from"])
 	_input_pins.append(word_source)
 	
-	part.add_word_to_pin(word_source, part_input_pin, [0, bit_count - 1] if not bit_mapping else [bit_mapping["to"], bit_mapping["to"]])
+	part.add_word_to_pin(word_source, part_input_pin, bit_mapping["to"])
 
 func connect_output(part_name: String, part_output_pin: String, output_pin: String, bit_mapping = null):
 	var part = _parts[part_name]
-	var output_pin_info = _output_pin_map[output_pin]	
-	var output_pin_number = output_pin_info["pin_number"]
-	if output_pin_number >= _output_pins.size():
-		_output_pins.resize(output_pin_number + 1)
+	var output_pin_number = get_output_pin_number(output_pin)
+	var bit_count = _output_pin_map[output_pin]["bits"]
+	
+	if not bit_mapping:
+		bit_mapping = { from = [0, bit_count - 1], to = [0, bit_count -1] }
 		
 	var internal_pin = _output_pins[output_pin_number]
-	var connection = ChipSource.new(part, part_output_pin, [0, 15] if not bit_mapping else [bit_mapping["from"], bit_mapping["from"]])
+	var connection = ChipSource.new(part, part_output_pin, bit_mapping["from"])
 			
-	internal_pin.add_word([0, 15] if not bit_mapping else [bit_mapping["to"], bit_mapping["to"]], connection) 
+	internal_pin.add_word(bit_mapping["to"], connection) 
 		
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)

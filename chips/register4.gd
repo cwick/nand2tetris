@@ -11,6 +11,6 @@ func _init():
 	
 	for i in range(bits):
 		add_part("bit%d" % i, Bit.new())
-		connect_output("bit%d" % i, "out", "out", { from = 0, to = i})
-		connect_input("bit%d" % i, "in", "in", { from = i, to = 0})
+		connect_output("bit%d" % i, "out", "out", { from = [0, 0], to = [i, i]})
+		connect_input("bit%d" % i, "in", "in", { from = [i, i], to = [0, 0]})
 		connect_input("bit%d" % i, "load", "load")
