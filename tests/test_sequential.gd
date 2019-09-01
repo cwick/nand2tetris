@@ -3,6 +3,7 @@ const DataFlipFlop = preload("res://chips/native/flip_flop.gd")
 const Mux = preload("res://chips/mux.gd")
 const Bit = preload("res://chips/bit.gd")
 const Register4 = preload("res://chips/register4.gd")
+const Ram8 = preload("res://chips/ram8.gd")
 
 func test_data_flip_flop():
 	var flip_flop = DataFlipFlop.new()
@@ -55,4 +56,29 @@ func _set_word(register, value):
 	
 func _read_word(register):
 	return register.evaluate([0, 0])[0]
+	
+func test_ram8():
+	var ram = Ram8.new()
+	var input_pins = ram.get_input_pins()
+	var address_bits = input_pins[ram.get_input_pin_number("address")]["bits"]
+	var ram_size = pow(2, address_bits)
+	var input = []
+	input.resize(input_pins.size())
+	
+	# Write value into every register
+	for i in range(ram_size):
+		input[ram.get_input_pin_number("load")] = 1
+		input[ram.get_input_pin_number("address")] = i
+		input[ram.get_input_pin_number("in")] = i
+		
+		ram.evaluate(input)
+		ram.tick()
+	
+	# Read value from every register
+	for i in range(ram_size):
+		input[ram.get_input_pin_number("load")] = 0
+		input[ram.get_input_pin_number("address")] = i
+		input[ram.get_input_pin_number("in")] = 0
+		
+		assert_eq(ram.evaluate(input), [i])
 	
