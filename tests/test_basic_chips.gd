@@ -53,7 +53,7 @@ func test_chip_inputs_are_false_when_all_not_connected():
 	chip.add_output("out", 0)
 	chip.add_input("a", 0)
 	chip.add_input("b", 0)
-	chip.add_part("and", _make_and_chip())
+	chip.add_part("and", AndChip.new())
 	chip.connect_output("and", "out", "out")
 
 	assert_truth_table(chip, 
@@ -68,7 +68,7 @@ func test_chip_input_is_false_when_some_not_connected():
 	chip.add_output("out", 0)
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
-	chip.add_part("and", _make_and_chip())
+	chip.add_part("and", AndChip.new())
 	chip.connect_output("and", "out", "out")
 	chip.connect_input("and", "b", "b")
 
@@ -81,7 +81,7 @@ func test_chip_input_is_false_when_some_not_connected():
 		""")
 	
 func test_chip_outputs_are_false_when_not_connected():
-	chip.add_part("and", _make_and_chip())
+	chip.add_part("and", AndChip.new())
 	chip.add_output("out", 0)
 	chip.add_input("a", 0)
 	chip.add_input("b", 0)
@@ -98,7 +98,7 @@ func test_chip_outputs_are_false_when_not_connected():
 		""")
 
 func test_chip_inputs_are_false_when_not_passed():
-	chip.add_part("and", _make_and_chip())
+	chip.add_part("and", AndChip.new())
 	chip.add_output("out", 0)
 	chip.connect_output("and", "out", "out")
 
@@ -123,14 +123,14 @@ func test_nand():
 		""")
 
 func test_not():
-	assert_truth_table(_make_not_chip(), 
+	assert_truth_table(NotChip.new(), 
 		"""
 		1 = 0
 		0 = 1
 		""")
 
 func test_not_not():
-	var not_chip = _make_not_chip()
+	var not_chip = NotChip.new()
 	chip.add_input("in", 0)
 	chip.add_output("out", 0)
 
@@ -180,7 +180,7 @@ func test_chip_with_two_outputs():
 		""")
 
 func test_and():
-	assert_truth_table(_make_and_chip(),
+	assert_truth_table(AndChip.new(),
 		"""
 		1 1 = 1
 		1 0 = 0
@@ -189,8 +189,8 @@ func test_and():
 		""")
 
 func test_or():
-	var not_chip = _make_not_chip()
-	assert_truth_table(_make_or_chip(), 
+	var not_chip = NotChip.new()
+	assert_truth_table(OrChip.new(),
 		"""
 		1 1 = 1
 		1 0 = 1
@@ -224,7 +224,7 @@ func test_mux():
 		""")
 
 func test_and_with_three_inputs():
-	var and_chip = _make_and_chip()
+	var and_chip = AndChip.new()
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
 	chip.add_input("c", 2)
@@ -254,7 +254,7 @@ func test_and_with_three_inputs():
 
 func test_connect_chip_with_multiple_outputs():
 	var bitwise_not_chip = _make_bitwise_not_chip()
-	var not_chip = _make_not_chip()
+	var not_chip = NotChip.new()
 	chip.add_input("a", 0)
 	chip.add_input("b", 1)
 	chip.add_output("out", 0)
@@ -306,11 +306,8 @@ func test_multibit_nand():
 		1010 1100 = 0111
 		""")
 
-func _make_not_chip():
-	return NotChip.new()
-
 func _make_bitwise_not_chip():
-	var not_chip = _make_not_chip()
+	var not_chip = NotChip.new()
 	var chip = SimulatedChip.new()
 
 	chip.add_input("a", 0)
@@ -326,9 +323,3 @@ func _make_bitwise_not_chip():
 	chip.connect_input("not_b", "in", "b")
 
 	return chip
-
-func _make_and_chip():
-	return AndChip.new()
-
-func _make_or_chip():
-	return OrChip.new()
