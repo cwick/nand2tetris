@@ -28,7 +28,9 @@ func connect_part(part_name: String, part_input_pin: String,
 	var other_part_node = _parts[other_part]
 	var part = _parts[part_name]
 	var connection = ChipSource.new(other_part_node, other_part_output_pin, [0, 15])
-	part.add_word_to_pin(connection, part_input_pin, [0, 15])
+	var part_input_pin_bits = part.get_input_pin(part_input_pin)["bits"]
+	
+	part.add_word_to_pin(connection, part_input_pin, [0, part_input_pin_bits - 1])
 	
 func connect_input(part_name: String, part_input_pin: String, input_pin: String, bit_mapping = null):
 	var part = _parts[part_name]
@@ -37,7 +39,7 @@ func connect_input(part_name: String, part_input_pin: String, input_pin: String,
 	
 	if not bit_mapping:
 		bit_mapping = { from = [0, bit_count - 1], to = [0, bit_count -1] }
-		
+	
 	var word_source = InputPin.new(input_pin_number, bit_mapping["from"])
 	_input_pins.append(word_source)
 	
@@ -51,11 +53,15 @@ func connect_output(part_name: String, part_output_pin: String, output_pin: Stri
 	if not bit_mapping:
 		bit_mapping = { from = [0, bit_count - 1], to = [0, bit_count -1] }
 		
-	var internal_pin = _output_pins[output_pin_number]
-	var connection = ChipSource.new(part, part_output_pin, bit_mapping["from"])
+	var source = ChipSource.new(part, part_output_pin, bit_mapping["from"])
+	
+	# If we're mapping onto the full width of the output pin, we can connect the 
+	# source directly to the pin, eliminating the use of an internal pin
+	if bit_mapping["to"] == [0, bit_count - 1]:
+		_output_pins[output_pin_number] = source
+	else:
+		_output_pins[output_pin_number].add_word(bit_mapping["to"], source) 
 			
-	internal_pin.add_word(bit_mapping["to"], connection) 
-		
 func add_part(part_name, part):
 	_parts[part_name] = ChipNode.new(part)
 
@@ -140,16 +146,27 @@ class ChipNode:
 		if pin_number >= _pins.size() - 1:
 			_pins.resize(pin_number + 1)
 			
-		var pin = _pins[pin_number]
-		if not pin:
-			pin = InternalPin.new()
-			_pins[pin_number] = pin
+		# If we're mapping onto the full width of the pin, we can connect the 
+		# source directly to the pin, eliminating the use of an internal pin
+		if bit_range == [0, get_input_pin(pin_name)["bits"] - 1]:
+			_pins[pin_number] = word_source
+		else:
+			var pin = _pins[pin_number]
+			if not pin:
+				pin = InternalPin.new()
+				_pins[pin_number] = pin
+				
+			pin.add_word(bit_range, word_source)
 			
-		pin.add_word(bit_range, word_source)
-		
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
+		
+	func get_input_pin_number(pin_name) -> int:
+		return _chip.get_input_pin_number(pin_name)
 
+	func get_input_pin(pin_name):
+		return _chip.get_input_pins()[get_input_pin_number(pin_name)]
+		
 	func tick():				
 		_chip.tick()
 		
