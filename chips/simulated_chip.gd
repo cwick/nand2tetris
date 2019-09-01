@@ -5,12 +5,12 @@ var name := "generic chip"
 var _parts = {}
 var _output_pins = []
 var _output_pin_map = {}
-var _input_nodes = {}
+var _input_pins = []
 var _input_pin_map = {}
 
 func _evaluate(input):
-	for node in _input_nodes.values():
-		node.bind_input(input)
+	for pin in _input_pins:
+		pin.bind_input(input)
 
 	var output = []
 
@@ -27,15 +27,18 @@ func connect_part(part_name: String, part_input_pin: String,
 				  other_part: String, other_part_output_pin: String):
 	var other_part_node = _parts[other_part]
 	var part = _parts[part_name]
-	var connection = InternalPin.new(other_part_node, other_part_output_pin, 0)
-
-	part.add_child_at(connection, part_input_pin, 0)
-
-func connect_input(part_name: String, part_input_pin: String, input_pin: String, bits = { from = 0, to = 0 }):
+	var connection = ChipSource.new(other_part_node, other_part_output_pin, [0, 16])
+	part.add_word_to_pin(connection, part_input_pin, [0, 16])
+	
+func connect_input(part_name: String, part_input_pin: String, input_pin: String, bit_mapping = null):
 	var part = _parts[part_name]
-	var input_node = _input_nodes[input_pin + String(bits["from"])]
-
-	part.add_child_at(input_node, part_input_pin, bits["to"])
+	var input_pin_number = get_input_pin_number(input_pin)
+	var bit_count = _input_pin_map[input_pin]["bits"]
+	
+	var word_source = InputPin.new(input_pin_number, [0, bit_count - 1] if not bit_mapping else [bit_mapping["from"], bit_mapping["from"]])
+	_input_pins.append(word_source)
+	
+	part.add_word_to_pin(word_source, part_input_pin, [0, bit_count - 1] if not bit_mapping else [bit_mapping["to"], bit_mapping["to"]])
 
 func connect_output(part_name: String, part_output_pin: String, output_pin: String, bits = { from = 0, to = 0 }):
 	var part = _parts[part_name]
@@ -57,8 +60,6 @@ func add_part(part_name, part):
 
 func add_input(pin_name, pin_number, bits=1):
 	_input_pin_map[pin_name] = { pin_number = pin_number, bits = bits }
-	for i in range(bits):
-		_input_nodes[pin_name + String(i)] = InputNode.new(pin_number, i)
 
 func add_output(pin_name, pin_number, bits=1):
 	if pin_number >= _output_pins.size():
@@ -115,6 +116,7 @@ class InternalPin:
 		var result := _chip_node.evaluate()
 		return 1 if result[_output_pin_selector] & (1 << _bit_number) else 0
 
+# TODO: delete
 class MultiBitPin:
 	var bits := []
 	
@@ -133,7 +135,7 @@ class MultiBitPin:
 		return result
 		
 class ChipNode:
-	var _child_nodes = []
+	var _pins := []
 	var _chip
 	var _cached_value
 	var _is_feedback_loop = false
@@ -148,8 +150,8 @@ class ChipNode:
 		if not _cached_value:
 			var input_values = []
 			if should_evaluate_children:
-				for child in _child_nodes:
-					input_values.append(child.evaluate() if child else 0)
+				for pin in _pins:
+					input_values.append(pin.evaluate() if pin else 0)
 			
 			_chip._invalidate()
 			_cached_value = _chip._evaluate(input_values)
@@ -162,26 +164,25 @@ class ChipNode:
 	func _invalidate():
 		_cached_value = null
 		
-	func add_child_at(child, pin_name: String, bit_number):
+	func add_word_to_pin(word_source, pin_name, bit_range):
 		var pin_number = _chip.get_input_pin_number(pin_name)
-		var bit_count = _chip.get_input_pins()[pin_number]["bits"]
+		if pin_number >= _pins.size() - 1:
+			_pins.resize(pin_number + 1)
+			
+		var pin = _pins[pin_number]
+		if not pin:
+			pin = InternalPinNew.new()
+			_pins[pin_number] = pin
+			
+		pin.add_word(bit_range, word_source)
 		
-		if pin_number >= _child_nodes.size() - 1:
-			_child_nodes.resize(pin_number + 1)
-		
-		if bit_count > 1:
-			if not _child_nodes[pin_number]:
-				_child_nodes[pin_number] = MultiBitPin.new(bit_count)
-			_child_nodes[pin_number].add_child_at(child, bit_number)
-		else:
-			_child_nodes[pin_number] = child
-
 	func get_output_pin_number(pin_name) -> int:
 		return _chip.get_output_pin_number(pin_name)
 
 	func tick():				
 		_chip.tick()
 		
+# TODO: delete
 class InputNode:
 	var _input: Array
 	var input_pin_number
@@ -198,3 +199,64 @@ class InputNode:
 		if input_pin_number >= _input.size():
 			return 0
 		return 1 if _input[input_pin_number] & (1 << input_bit_number) else 0
+
+class ChipSource:
+	var _chip_node: ChipNode
+	var _output_pin_selector: int
+	var _bit_range: Array
+	var _bit_mask: int
+
+	func _init(chip_node: ChipNode, output_pin_name: String, bit_range: Array):
+		_bit_range = bit_range
+		_chip_node = chip_node
+		_output_pin_selector = chip_node.get_output_pin_number(output_pin_name)
+		
+		_bit_mask = 0
+		
+		for i in range(bit_range[0], bit_range[1] + 1):
+			_bit_mask |= 1 << i
+
+	func evaluate() -> int:
+		var result = _chip_node.evaluate()[_output_pin_selector]
+		return (result & _bit_mask) >> _bit_range[0]
+
+		
+class InputPin:
+	var _pin_number: int
+	var _bit_range: Array
+	var _input: Array
+	var _bit_mask: int
+	
+	func _init(pin_number, bit_range):
+		_pin_number = pin_number
+		_bit_range = bit_range
+		_bit_mask = 0
+		
+		for i in range(bit_range[0], bit_range[1] + 1):
+			_bit_mask |= 1 << i
+		
+	func bind_input(input: Array):
+		_input = input
+		
+	func evaluate() -> int:
+		if _pin_number >= _input.size():
+			return 0
+		
+		return (_input[_pin_number] & _bit_mask) >> _bit_range[0]
+		
+class InternalPinNew:
+	var _words = []
+	
+	func evaluate() -> int:
+		var result = 0
+		for w in _words:
+			var word_value: int = w["source"].evaluate()
+			result |= word_value << w["range"][0]
+			
+		return result
+	
+	func add_word(bit_range, word_source):
+		# TODO: sort words by range
+		_words.append({
+			range = bit_range, source = word_source
+		})
