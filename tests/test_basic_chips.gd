@@ -4,7 +4,9 @@ const AndChip = preload("res://chips/and.gd")
 const OrChip = preload("res://chips/or.gd")
 const XorChip = preload("res://chips/xor.gd")
 const MuxChip = preload("res://chips/mux.gd")
+const Mux8Chip = preload("res://chips/native/mux8.gd")
 const DmuxChip = preload("res://chips/dmux.gd")
+const Dmux8Chip = preload("res://chips/native/dmux8.gd")
 const NotChip = preload("res://chips/not.gd")
 const Chip = preload("res://chips/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
@@ -286,6 +288,29 @@ func test_dmux():
 		0 1 = 0 0
 		0 0 = 0 0
 		""")
+
+func test_dmux8():
+	var dmux8 = Dmux8Chip.new()
+	var expected_output = []
+	expected_output.resize(8)
+	
+	for selector in range(8):
+		var input = randi() % 16
+		var output = dmux8.evaluate([input, selector])
+		for i in range(expected_output.size()):
+			expected_output[i] = input if i == selector else 0
+			
+		assert_eq(output, expected_output)
+
+func test_mux8():
+	var mux8 = Mux8Chip.new()
+	var inputs = []
+	inputs.resize(9)
+	
+	for i in range(8):
+		inputs[i] = randi() % 16
+		inputs[-1] = i
+		assert_eq(mux8.evaluate(inputs), [inputs[i]])
 
 func test_multibit_nand():
 	chip.add_input("a", 0, 4)

@@ -4,11 +4,10 @@ func _ready():
     for child in get_children():
         child.queue_free()
 
-    _add_chips_from_directory("res://chips/native")
-    _add_chips_from_directory("res://chips")
-    
+    _add_chips_from_directory("res://chips/native", ["dmux8", "mux8"])
+    _add_chips_from_directory("res://chips", ["chip", "simulated_chip"])
 
-func _add_chips_from_directory(dir_name: String):
+func _add_chips_from_directory(dir_name: String, exclude = []):
     var dir := Directory.new()
     dir.open(dir_name)
     dir.list_dir_begin(true, true)
@@ -16,7 +15,7 @@ func _add_chips_from_directory(dir_name: String):
     var gui_resource = load("res://gui/ChipGUI.tscn")
 
     while file != '':
-        if file != "chip.gd" and file != "simulated_chip.gd" and !dir.current_is_dir():
+        if !dir.current_is_dir() and not file.get_basename() in exclude:
             var gui = gui_resource.instance()
             gui.chip = dir.get_current_dir().plus_file(file)
             
