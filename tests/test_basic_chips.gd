@@ -4,9 +4,9 @@ const AndChip = preload("res://chips/and.gd")
 const OrChip = preload("res://chips/or.gd")
 const XorChip = preload("res://chips/xor.gd")
 const MuxChip = preload("res://chips/mux.gd")
-const Mux8Chip = preload("res://chips/native/mux8.gd")
+const Mux4_8WayChip = preload("res://chips/native/mux4_8way.gd")
 const DmuxChip = preload("res://chips/dmux.gd")
-const Dmux8Chip = preload("res://chips/native/dmux8.gd")
+const Dmux4_8WayChip = preload("res://chips/native/dmux4_8way.gd")
 const NotChip = preload("res://chips/not.gd")
 const Chip = preload("res://chips/chip.gd")
 const NativeNand = preload("res://chips/native/nand.gd")
@@ -321,21 +321,21 @@ func test_dmux():
 		0 0 = 0 0
 		""")
 
-func test_dmux8():
-	var dmux8 = Dmux8Chip.new()
+func test_dmux4_8way():
+	var dmux = Dmux4_8WayChip.new()
 	var expected_output = []
 	expected_output.resize(8)
 	
 	for selector in range(8):
 		var input = randi() % 16
-		var output = dmux8.evaluate([input, selector])
+		var output = dmux.evaluate([input, selector])
 		for i in range(expected_output.size()):
 			expected_output[i] = input if i == selector else 0
 			
 		assert_eq(output, expected_output)
 
-func test_mux8():
-	var mux8 = Mux8Chip.new()
+func test_mux4_8way():
+	var mux8 = Mux4_8WayChip.new()
 	var inputs = []
 	inputs.resize(9)
 	

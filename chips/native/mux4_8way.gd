@@ -16,7 +16,7 @@ func get_output_pins():
         { name = "out", bits = 4 }
     ]
 
-var name = "MUX8"
+var name = "MUX4_8Way"
 
 func _evaluate(input: Array) -> Array:
     return [input[input[size]]]

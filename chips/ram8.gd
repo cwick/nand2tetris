@@ -1,7 +1,7 @@
 extends "res://chips/simulated_chip.gd"
 const Register4 = preload("res://chips/register4.gd")
-const Mux8 = preload("res://chips/native/mux8.gd")
-const Dmux8 = preload("res://chips/native/dmux8.gd")
+const Mux4_8Way = preload("res://chips/native/mux4_8way.gd")
+const Dmux4_8Way = preload("res://chips/native/dmux4_8way.gd")
 
 func _init():
 	self.name = "RAM8"
@@ -19,14 +19,14 @@ func _init():
 		add_part("register%d" % i, Register4.new())
 	
 	# Select one register from the bank as output, based on address pin
-	add_part("mux_output", Mux8.new())
+	add_part("mux_output", Mux4_8Way.new())
 	connect_output("mux_output", "out", "out")
 	connect_input("mux_output", "selector", "address")
 	for i in range(size):
 		connect_part("mux_output", "in%d" % i, "register%d" % i, "out")
 	
 	# Send load signal to correct register, based on address pin
-	add_part("dmux_load", Dmux8.new())
+	add_part("dmux_load", Dmux4_8Way.new())
 	connect_input("dmux_load", "in", "load")
 	connect_input("dmux_load", "selector", "address")
 	for i in range(size):
