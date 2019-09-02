@@ -5,6 +5,7 @@ const OrChip = preload("res://chips/or.gd")
 const XorChip = preload("res://chips/xor.gd")
 const MuxChip = preload("res://chips/mux.gd")
 const Mux4_8WayChip = preload("res://chips/native/mux4_8way.gd")
+const Mux8_2WayChip = preload("res://chips/native/mux8_2way.gd")
 const DmuxChip = preload("res://chips/dmux.gd")
 const Dmux4_8WayChip = preload("res://chips/native/dmux4_8way.gd")
 const NotChip = preload("res://chips/not.gd")
@@ -335,14 +336,20 @@ func test_dmux4_8way():
 		assert_eq(output, expected_output)
 
 func test_mux4_8way():
-	var mux8 = Mux4_8WayChip.new()
-	var inputs = []
-	inputs.resize(9)
+	_test_mux_chip(Mux4_8WayChip.new())
+		
+func test_mux8_2way():
+	_test_mux_chip(Mux8_2WayChip.new())
 	
-	for i in range(8):
-		inputs[i] = randi() % 16
-		inputs[-1] = i
-		assert_eq(mux8.evaluate(inputs), [inputs[i]])
+func _test_mux_chip(mux):
+	var inputs = []
+	var input_pin_count = mux.get_input_pins().size()
+	inputs.resize(input_pin_count)
+	
+	for i in range(input_pin_count - 1):
+		inputs[mux.get_input_pin_number("in%d" % i)] = randi() % int(pow(2, mux.bits) - 1)
+		inputs[mux.get_input_pin_number("selector")] = i
+		assert_eq(mux.evaluate(inputs), [inputs[i]])
 
 func test_multibit_nand():
 	chip.add_input("a", 0, 4)

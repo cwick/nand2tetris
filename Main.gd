@@ -4,7 +4,7 @@ func _ready():
     for child in get_children():
         child.queue_free()
 
-    _add_chips_from_directory("res://chips/native", ["dmux4_8way", "mux4_8way"])
+    _add_chips_from_directory("res://chips/native", ["dmux4_8way", "mux4_8way", "mux8_2way", "base_mux"])
     _add_chips_from_directory("res://chips", ["chip", "simulated_chip"])
 
 func _add_chips_from_directory(dir_name: String, exclude = []):

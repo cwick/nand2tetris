@@ -36,9 +36,9 @@ margin_bottom = -20.0
 [node name="GridContainer" type="GridContainer" parent="MarginContainer"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 1309.0
-margin_bottom = 794.0
-columns = 5
+margin_right = 1662.0
+margin_bottom = 843.0
+columns = 4
 script = ExtResource( 2 )
 
 [node name="ChipGUI" parent="MarginContainer/GridContainer" instance=ExtResource( 3 )]
@@ -52,5 +52,5 @@ margin_top = -50.0
 margin_right = 94.0
 text = "Tick"
 script = SubResource( 1 )
-[connection signal="pressed" from="Button" to="MarginContainer/GridContainer" method="_on_Tick_pressed"]
 [connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="Button" to="MarginContainer/GridContainer" method="_on_Tick_pressed"]

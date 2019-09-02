@@ -1,4 +1,4 @@
 extends "./base_mux.gd"
 
-var size = 8
-var bits = 4
+var size = 2
+var bits = 8
