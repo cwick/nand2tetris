@@ -1,35 +1,29 @@
 extends "res://chips/simulated_chip.gd"
 
-const Or = preload("res://chips/or.gd")
-const Not = preload("res://chips/not.gd")
-const And = preload("res://chips/and.gd")
+const Nand = preload("res://chips/native/nand.gd")
 
 func _init():
 	self.name = "XOR"
 
-	var not_chip = Not.new()
-	var and_chip = And.new()
-	var or_chip = Or.new()
+	var nand = Nand.new()
 
 	add_input("a", 0)
 	add_input("b", 1)
 	add_output("out", 0)
 
-	add_part("and", and_chip)
-	add_part("or1", or_chip)
-	add_part("or2", or_chip)
-	add_part("not1", not_chip)
-	add_part("not2", not_chip)
+	add_part("nand1", nand)
+	add_part("nand2", nand)
+	add_part("nand3", nand)
+	add_part("nand4", nand)
+	
+	connect_output("nand1", "out", "out")
 
-	connect_output("and", "out", "out")
+	connect_part("nand1", "a", "nand2", "out")
+	connect_part("nand1", "b", "nand3", "out")
+	connect_part("nand2", "b", "nand4", "out")
+	connect_part("nand3", "a", "nand4", "out")
 
-	connect_part("and", "a", "or1", "out")
-	connect_part("and", "b", "or2", "out")
-
-	connect_part("or2", "a", "not1", "out")
-	connect_part("or2", "b", "not2", "out")
-
-	connect_input("not1", "in", "a")
-	connect_input("not2", "in", "b")
-	connect_input("or1", "a", "a")
-	connect_input("or1", "b", "b")
+	connect_input("nand2", "a", "a")
+	connect_input("nand3", "b", "b")
+	connect_input("nand4", "a", "a")
+	connect_input("nand4", "b", "b")
